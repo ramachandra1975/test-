@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Forge — AI Document Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:       #0f0d0a;
+  --paper:     #faf7f2;
+  --cream:     #f2ede4;
+  --gold:      #b8860b;
+  --gold-lt:   #d4a017;
+  --gold-pale: #f0e4b8;
+  --teal:      #1a5c6e;
+  --teal-lt:   #e8f4f7;
+  --rose:      #8b2635;
+  --slate:     #3d3530;
+  --muted:     #7a6e65;
+  --border:    rgba(180,160,120,0.3);
+  --border-strong: rgba(180,160,120,0.6);
+  --green-lt:  #4ade80;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Outfit', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; overflow-x: hidden; }
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+.app { position: relative; z-index: 1; display: grid; grid-template-rows: auto auto auto 1fr; min-height: 100vh; }
+
+/* MASTHEAD */
+.masthead { background: var(--ink); color: var(--paper); padding: 0 2.5rem; display: flex; align-items: center; gap: 2rem; height: 60px; border-bottom: 2px solid var(--gold); }
+.masthead-logo { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 900; font-style: italic; color: var(--gold-lt); letter-spacing: 0.01em; white-space: nowrap; }
+.masthead-logo span { color: var(--paper); font-style: normal; font-weight: 400; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-left: 10px; opacity: 0.6; }
+.masthead-domains { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.domain-chip { font-size: 10px; padding: 3px 9px; border: 0.5px solid rgba(184,134,11,0.4); border-radius: 20px; color: rgba(240,228,184,0.8); font-family: 'DM Mono', monospace; letter-spacing: 0.04em; white-space: nowrap; }
+
+/* MODE BANNER */
+.mode-banner { background: var(--ink); border-bottom: 1px solid var(--border-strong); padding: 9px 2.5rem; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.mode-pill { display: flex; align-items: center; gap: 8px; border-radius: 20px; padding: 5px 14px; transition: all 0.4s; }
+.mode-pill.ai-mode   { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.35); }
+.mode-pill.free-mode { background: rgba(212,160,23,0.10); border: 1px solid rgba(212,160,23,0.35); }
+.mode-pill.detecting { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); }
+.pill-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; transition: all 0.4s; }
+.ai-mode   .pill-dot { background: var(--green-lt); box-shadow: 0 0 7px rgba(74,222,128,0.8); }
+.free-mode .pill-dot { background: var(--gold-lt);  box-shadow: 0 0 7px rgba(212,160,23,0.6); }
+.detecting .pill-dot { background: rgba(255,255,255,0.3); animation: blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.pill-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.07em; white-space: nowrap; }
+.ai-mode   .pill-label { color: rgba(74,222,128,0.9); }
+.free-mode .pill-label { color: rgba(212,160,23,0.9); }
+.detecting .pill-label { color: rgba(255,255,255,0.4); }
+
+/* Blurred key badge */
+.key-badge { display: flex; align-items: center; gap: 8px; font-family: 'DM Mono', monospace; font-size: 11px; }
+.key-badge-label { color: rgba(255,255,255,0.35); letter-spacing: 0.06em; text-transform: uppercase; }
+.key-blur-box {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px; padding: 3px 10px; font-size: 12px; letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.9); filter: blur(5px);
+  user-select: none; pointer-events: none;
+}
+
+.mode-tabs { display: flex; gap: 4px; margin-left: auto; }
+.mode-tab { padding: 4px 14px; border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.07em; border: 1px solid transparent; color: rgba(255,255,255,0.35); }
+.mode-tab.active-ai   { border-color: rgba(74,222,128,0.4); color: rgba(74,222,128,0.8); }
+.mode-tab.active-free { border-color: rgba(212,160,23,0.4);  color: rgba(212,160,23,0.8); }
+
+/* FREE SUBTABS */
+.free-subtabs { background: var(--cream); border-bottom: 1px solid var(--border-strong); padding: 0 2.5rem; display: none; gap: 0; align-items: stretch; }
+.free-subtab { padding: 10px 20px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.07em; color: var(--muted); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.free-subtab:hover { color: var(--ink); }
+.free-subtab.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+/* MAIN */
+.main { display: grid; grid-template-columns: 340px 1fr; height: calc(100vh - 107px); overflow: hidden; }
+
+/* WIZARD */
+.wizard { background: var(--cream); border-right: 1px solid var(--border-strong); display: flex; flex-direction: column; overflow-y: auto; }
+.wizard-header { padding: 1.5rem 1.5rem 1rem; border-bottom: 1px solid var(--border); background: var(--paper); }
+.wizard-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.wizard-sub { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.free-notice { background: rgba(212,160,23,0.08); border: 1px solid rgba(212,160,23,0.25); border-radius: 6px; padding: 8px 12px; font-size: 11px; color: var(--gold); font-family: 'DM Mono', monospace; line-height: 1.6; display: none; }
+.wizard-body { flex: 1; padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; }
+.field-group { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.step-num { width: 18px; height: 18px; border-radius: 50%; background: var(--gold); color: #fff; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.step-num.free-num { background: var(--teal); }
+.field-input { width: 100%; background: var(--paper); border: 1px solid var(--border-strong); border-radius: 6px; padding: 9px 12px; font-family: 'Outfit', sans-serif; font-size: 14px; color: var(--ink); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+.field-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-pale); }
+.field-input::placeholder { color: var(--muted); opacity: 0.6; }
+textarea.field-input { resize: vertical; min-height: 64px; line-height: 1.55; }
+.length-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.length-card { background: var(--paper); border: 1px solid var(--border-strong); border-radius: 6px; padding: 8px 10px; cursor: pointer; transition: all 0.15s; position: relative; text-align: left; }
+.length-card:hover { border-color: var(--gold); background: var(--gold-pale); }
+.length-card.active { border-color: var(--gold); background: var(--gold-pale); box-shadow: 0 0 0 2px var(--gold); }
+.length-card.ai-only { opacity: 0.4; pointer-events: none; }
+.lc-name { font-size: 12px; font-weight: 600; color: var(--ink); }
+.lc-tokens { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 2px; letter-spacing: 0.04em; }
+.lc-pro, .lc-ai-only { position: absolute; top: 4px; right: 6px; font-size: 8px; font-family: 'DM Mono', monospace; letter-spacing: 0.06em; }
+.lc-pro { color: var(--gold); }
+.lc-ai-only { color: var(--rose); }
+.field-select { width: 100%; background: var(--paper); border: 1px solid var(--border-strong); border-radius: 6px; padding: 9px 12px; font-family: 'Outfit', sans-serif; font-size: 14px; color: var(--ink); outline: none; cursor: pointer; transition: border-color 0.2s; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a6e65' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+.field-select:focus { border-color: var(--gold); }
+.token-estimate { background: var(--paper); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.te-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.te-value { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--teal); font-weight: 500; }
+.te-bar-wrap { width: 100%; background: rgba(180,160,120,0.2); border-radius: 3px; height: 3px; margin-top: 6px; }
+.te-bar { height: 100%; background: var(--gold); border-radius: 3px; transition: width 0.4s ease; }
+.struct-checks { display: flex; flex-wrap: wrap; gap: 6px; }
+.struct-chip { padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border-strong); background: var(--paper); font-size: 11px; color: var(--muted); cursor: pointer; transition: all 0.15s; user-select: none; }
+.struct-chip.active { border-color: var(--teal); background: var(--teal-lt); color: var(--teal); }
+.gen-btn { width: 100%; background: var(--ink); color: var(--gold-lt); border: none; border-radius: 8px; padding: 14px; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; font-style: italic; cursor: pointer; letter-spacing: 0.02em; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: auto; }
+.gen-btn:hover:not(:disabled) { background: #2a2520; transform: translateY(-1px); }
+.gen-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-arrow { font-style: normal; transition: transform 0.2s; }
+.gen-btn:hover .btn-arrow { transform: translateX(4px); }
+.wizard-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); }
+
+/* OUTPUT */
+.output-panel { display: flex; flex-direction: column; overflow: hidden; background: var(--paper); }
+.output-toolbar { padding: 0.75rem 1.75rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; background: var(--cream); flex-shrink: 0; }
+.ot-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); flex: 1; }
+.ot-btn { padding: 5px 14px; border-radius: 4px; border: 1px solid var(--border-strong); background: var(--paper); color: var(--slate); font-family: 'DM Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+.ot-btn:hover { border-color: var(--gold); color: var(--gold); }
+.ot-progress { display: none; align-items: center; gap: 8px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--teal); }
+.spinner { animation: spin 1s linear infinite; display: inline-block; }
+@keyframes spin { from{transform:rotate(0deg)}to{transform:rotate(360deg)} }
+.output-scroll { flex: 1; overflow-y: auto; padding: 2.5rem 3rem; }
+
+/* DOC RENDERING */
+.doc-cover { text-align: center; padding: 3rem 2rem 2rem; border-bottom: 2px solid var(--border-strong); margin-bottom: 2rem; }
+.doc-domain-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); border: 1px solid var(--gold); padding: 3px 12px; border-radius: 20px; margin-bottom: 1rem; }
+.doc-cover h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 900; color: var(--ink); line-height: 1.15; margin-bottom: 0.75rem; }
+.doc-cover .doc-meta { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.06em; display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.doc-cover .doc-meta span { border: 0.5px solid var(--border-strong); padding: 2px 8px; border-radius: 3px; }
+.doc-body { font-family: 'Outfit', sans-serif; font-size: 15px; line-height: 1.9; color: var(--slate); max-width: 720px; margin: 0 auto; }
+.doc-body h2 { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: var(--ink); margin: 2rem 0 0.75rem; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.doc-body h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-style: italic; color: var(--teal); margin: 1.5rem 0 0.5rem; }
+.doc-body p { margin-bottom: 1rem; }
+.doc-body ul, .doc-body ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+.doc-body li { margin-bottom: 0.4rem; }
+.doc-body blockquote { border-left: 3px solid var(--gold); padding: 0.75rem 1.25rem; background: var(--gold-pale); margin: 1.5rem 0; font-style: italic; border-radius: 0 6px 6px 0; color: var(--slate); }
+
+/* FREE PANELS */
+.free-panel { display: none; flex-direction: column; }
+.free-panel.active { display: flex; }
+.search-result-card { background: var(--paper); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; max-width: 720px; transition: border-color 0.15s; }
+.search-result-card:hover { border-color: var(--gold); }
+.src-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--teal); margin-bottom: 4px; }
+.src-url { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 6px; }
+.src-snippet { font-size: 13px; line-height: 1.7; color: var(--slate); }
+.library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+.lib-card { background: var(--cream); border: 1px solid var(--border-strong); border-radius: 8px; padding: 1rem; cursor: pointer; transition: all 0.15s; }
+.lib-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+.lib-domain { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 6px; }
+.lib-title { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.lib-meta { font-size: 11px; color: var(--muted); }
+
+/* CHUNK LOG */
+.chunk-log { background: var(--cream); border: 1px solid var(--border); border-radius: 6px; padding: 1rem 1.25rem; margin: 0 auto 1.5rem; max-width: 720px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); line-height: 2; }
+.cl-line { display: flex; gap: 8px; align-items: center; }
+.cl-ok { color: #16a34a; } .cl-pending { color: var(--gold); }
+.cl-spin { animation: spin 1s linear infinite; display: inline-block; }
+
+/* EMPTY / ERROR */
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 3rem; color: var(--muted); gap: 1rem; }
+.empty-icon { font-size: 3rem; opacity: 0.4; }
+.empty-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-style: italic; color: var(--ink); opacity: 0.5; }
+.empty-sub { font-size: 13px; line-height: 1.7; max-width: 380px; }
+.mode-badge-big { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.07em; }
+.mode-badge-big.ai   { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: #4ade80; }
+.mode-badge-big.free { background: rgba(212,160,23,0.1);  border: 1px solid rgba(212,160,23,0.3);  color: var(--gold-lt); }
+.error-box { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 1rem 1.25rem; color: #b91c1c; font-size: 13px; line-height: 1.7; max-width: 720px; margin: 0 auto 1.5rem; }
+
+::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+@media (max-width: 900px) {
+  .main { grid-template-columns: 1fr; height: auto; }
+  .wizard { border-right: none; border-bottom: 1px solid var(--border-strong); }
+  .output-panel { min-height: 60vh; }
+  .masthead-domains { display: none; }
+  .output-scroll { padding: 1.5rem 1.25rem; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-logo">Research Forge <span>by Cultural Musings</span></div>
+  <div class="masthead-domains">
+    <span class="domain-chip">Music</span><span class="domain-chip">Philosophy</span>
+    <span class="domain-chip">Microbiology</span><span class="domain-chip">Fine Arts</span>
+    <span class="domain-chip">Science</span><span class="domain-chip">Vedic</span>
+    <span class="domain-chip">Software</span>
+  </div>
+</header>
+
+<!-- MODE BANNER -->
+<div class="mode-banner">
+  <div class="mode-pill detecting" id="modePill">
+    <div class="pill-dot"></div>
+    <span class="pill-label" id="pillLabel">Detecting mode…</span>
+  </div>
+  <div class="key-badge" id="keyBadge" style="display:none">
+    <span class="key-badge-label">API</span>
+    <div class="key-blur-box">sk-ant-••••••••••••••••••••••••••••••</div>
+  </div>
+  <div class="mode-tabs">
+    <span class="mode-tab" id="tabAI">✦ AI Mode</span>
+    <span class="mode-tab" id="tabFree">◈ Free Mode</span>
+  </div>
+</div>
+
+<!-- FREE SUBTABS -->
+<div class="free-subtabs" id="freeSubtabs">
+  <div class="free-subtab active" onclick="switchFreePanel('search',this)">🔍 Web Search</div>
+  <div class="free-subtab" onclick="switchFreePanel('samples',this)">📄 Sample Docs</div>
+  <div class="free-subtab" onclick="switchFreePanel('library',this)">📚 Library</div>
+  <div class="free-subtab" onclick="switchFreePanel('ailight',this)">⚡ AI Light</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- WIZARD -->
+  <aside class="wizard">
+    <div class="wizard-header">
+      <div class="wizard-title">Configure Your Document</div>
+      <div class="wizard-sub" id="wizardSub">Detecting AI availability…</div>
+    </div>
+    <div class="wizard-body">
+      <div class="free-notice" id="freeNotice">◈ Free Mode — AI generation locked. Use Web Search, Samples, Library or AI Light below.</div>
+
+      <div class="field-group">
+        <label class="field-label"><span class="step-num">1</span> Topic / Subject</label>
+        <input type="text" class="field-input" id="topicInput" placeholder="e.g. Raga Bhairavi and its therapeutic properties" oninput="updateEstimate();updateGenBtn()">
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="step-num">2</span> Keywords (optional)</label>
+        <input type="text" class="field-input" id="keywordsInput" placeholder="e.g. nada chikitsa, cortisol, morning ragas">
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="step-num">3</span> Research Domain</label>
+        <select class="field-select" id="domainSelect" onchange="updateEstimate()">
+          <option value="music">🎵 Music & Raga Science</option>
+          <option value="fine-arts">🎨 Fine Arts & Aesthetics</option>
+          <option value="philosophy">🕉️ Philosophy & Vedanta</option>
+          <option value="microbiology">🔬 Microbiology & Life Sciences</option>
+          <option value="science">⚗️ Science & Physics</option>
+          <option value="software">💻 Software & Technology</option>
+          <option value="vedic">🛕 Vedic Sciences & Culture</option>
+          <option value="literature">📖 Literature & Linguistics</option>
+          <option value="history">🏛️ History & Archaeology</option>
+          <option value="economics">📊 Economics & Policy</option>
+          <option value="law">⚖️ Law & Jurisprudence</option>
+          <option value="medicine">🏥 Medicine & Health</option>
+          <option value="sacred-geometry">📐 Sacred Geometry & Mathematics</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="step-num">4</span> Length Category</label>
+        <div class="length-grid">
+          <button class="length-card" data-len="5-liner"   data-tokens="100"   data-approach="single"  onclick="selectLen(this)"><div class="lc-name">5-liner</div><div class="lc-tokens">~100 tokens · instant</div></button>
+          <button class="length-card" data-len="20-liner"  data-tokens="400"   data-approach="single"  onclick="selectLen(this)"><div class="lc-name">20-liner</div><div class="lc-tokens">~400 tokens · fast</div></button>
+          <button class="length-card" data-len="40-liner"  data-tokens="800"   data-approach="single"  onclick="selectLen(this)"><div class="lc-name">40-liner</div><div class="lc-tokens">~800 tokens</div></button>
+          <button class="length-card" data-len="100-liner" data-tokens="2000"  data-approach="single"  onclick="selectLen(this)"><div class="lc-name">100-liner</div><div class="lc-tokens">~2,000 tokens</div></button>
+          <button class="length-card" data-len="3-pages"   data-tokens="3000"  data-approach="2pass"   onclick="selectLen(this)"><div class="lc-name">3 Pages</div><div class="lc-tokens">~3,000 · 2-pass</div></button>
+          <button class="length-card" data-len="9-pages"   data-tokens="9000"  data-approach="2pass"   onclick="selectLen(this)"><div class="lc-name">9 Pages</div><div class="lc-tokens">~9,000 · 2-pass</div></button>
+          <button class="length-card" data-len="20-pages"  data-tokens="20000" data-approach="3pass"   onclick="selectLen(this)"><div class="lc-name">20 Pages</div><div class="lc-tokens">~20,000 · 3-pass</div><span class="lc-ai-only">AI Only</span></button>
+          <button class="length-card" data-len="100-pages" data-tokens="100000" data-approach="chunked" onclick="selectLen(this)"><div class="lc-name">100 Pages</div><div class="lc-tokens">~100K · chunked</div><span class="lc-pro">PRO</span></button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="step-num">5</span> Research Depth</label>
+        <select class="field-select" id="depthSelect" onchange="updateEstimate()">
+          <option value="0.6">Simple Summary (0.6×)</option>
+          <option value="1" selected>Normal Research (1×)</option>
+          <option value="1.5">Deep Research (1.5×)</option>
+          <option value="2">Core Research (2×)</option>
+          <option value="3">Detailed & Explanatory (3×)</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label"><span class="step-num">6</span> Include in Document</label>
+        <div class="struct-checks">
+          <span class="struct-chip active" data-struct="cover"      onclick="toggleStruct(this)">Cover Page</span>
+          <span class="struct-chip active" data-struct="toc"        onclick="toggleStruct(this)">Table of Contents</span>
+          <span class="struct-chip active" data-struct="abstract"   onclick="toggleStruct(this)">Abstract</span>
+          <span class="struct-chip active" data-struct="references" onclick="toggleStruct(this)">References</span>
+          <span class="struct-chip"        data-struct="about"      onclick="toggleStruct(this)">About Section</span>
+          <span class="struct-chip"        data-struct="philosophy" onclick="toggleStruct(this)">Philosophy</span>
+        </div>
+      </div>
+      <div class="token-estimate">
+        <div style="flex:1">
+          <div class="te-label">Estimated Tokens</div>
+          <div class="te-bar-wrap"><div class="te-bar" id="teBar" style="width:5%"></div></div>
+        </div>
+        <div class="te-value" id="teValue">—</div>
+      </div>
+    </div>
+    <div class="wizard-footer">
+      <button class="gen-btn" id="genBtn" onclick="handleGenerate()" disabled>
+        <span id="genBtnText">Detecting…</span> <span class="btn-arrow">→</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- OUTPUT -->
+  <main class="output-panel">
+    <div class="output-toolbar">
+      <span class="ot-label" id="docStatusLabel">Ready</span>
+      <div class="ot-progress" id="progressIndicator"><span class="spinner">◌</span><span id="progressMsg">Generating…</span></div>
+      <button class="ot-btn" onclick="copyOutput()"     id="copyBtn" style="display:none">Copy Text</button>
+      <button class="ot-btn" onclick="downloadOutput()" id="dlBtn"   style="display:none">Download .txt</button>
+      <button class="ot-btn" onclick="clearOutput()"    id="clearBtn" style="display:none">Clear</button>
+    </div>
+    <div class="output-scroll" id="outputScroll">
+
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">📜</div>
+        <div class="empty-title">Your document will appear here</div>
+        <div id="emptyModeBadge"></div>
+        <div class="empty-sub" id="emptySub">Detecting mode…</div>
+      </div>
+
+      <div id="docOutput" style="display:none"></div>
+
+      <!-- FREE PANELS -->
+      <div class="free-panel" id="panel-search">
+        <div style="max-width:720px;margin:0 auto;width:100%">
+          <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1rem;color:var(--ink)">Web Search Results</h2>
+          <div id="searchResults"><div class="empty-state" style="height:auto;padding:2rem"><div class="empty-icon" style="font-size:2rem">🔍</div><div class="empty-sub">Enter a topic and click the button to search.</div></div></div>
+        </div>
+      </div>
+      <div class="free-panel" id="panel-samples">
+        <div style="max-width:720px;margin:0 auto;width:100%">
+          <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1rem;color:var(--ink)">Sample Documents</h2>
+          <div id="sampleDocs"></div>
+        </div>
+      </div>
+      <div class="free-panel" id="panel-library">
+        <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1rem;color:var(--ink)">Document Library</h2>
+        <div class="library-grid" id="libraryGrid"></div>
+      </div>
+      <div class="free-panel" id="panel-ailight">
+        <div style="max-width:720px;margin:0 auto;width:100%">
+          <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:0.5rem;color:var(--ink)">AI Light — Free Generation</h2>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;line-height:1.7">Uses HuggingFace free inference. Short docs only (5-liner / 20-liner). No API key needed.</p>
+          <div id="aiLightOutput"><div class="empty-state" style="height:auto;padding:2rem"><div class="empty-icon" style="font-size:2rem">⚡</div><div class="empty-sub">Enter a topic and click the button to generate.</div></div></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+</div>
+
+<script>
+/* ── CONFIG ── change to your deployed server URL */
+const PROXY_URL = 'http://localhost:3001';
+
+/* ── STATE ── */
+let appMode = 'detecting';
+let selectedLen = null, selectedApproach = 'single', selectedTokens = 0;
+let activeStructures = new Set(['cover','toc','abstract','references']);
+let generating = false, rawText = '';
+let activeFreePanel = 'search';
+
+/* ── BOOT ── */
+window.addEventListener('DOMContentLoaded', () => { autoDetect(); populateLibrary(); });
+
+async function autoDetect() {
+  try {
+    const res = await fetch(`${PROXY_URL}/api/health`, { signal: AbortSignal.timeout(4000) });
+    setMode(res.ok ? 'ai' : 'free');
+  } catch { setMode('free'); }
+}
+
+function setMode(mode) {
+  appMode = mode;
+  const isAI = mode === 'ai';
+  document.getElementById('modePill').className   = 'mode-pill ' + (isAI ? 'ai-mode' : 'free-mode');
+  document.getElementById('pillLabel').textContent = isAI ? 'AI Mode — Proxy Connected' : 'Free Mode — No API Required';
+  document.getElementById('keyBadge').style.display  = isAI ? 'flex' : 'none';
+  document.getElementById('tabAI').className    = 'mode-tab' + (isAI ? ' active-ai' : '');
+  document.getElementById('tabFree').className  = 'mode-tab' + (!isAI ? ' active-free' : '');
+  document.getElementById('freeSubtabs').style.display = isAI ? 'none' : 'flex';
+  document.getElementById('freeNotice').style.display  = isAI ? 'none' : 'block';
+  document.getElementById('wizardSub').textContent     = isAI ? 'AI-powered · 13 domains · 10 length categories' : 'Free mode · Web search · Samples · Library · AI Light';
+  document.getElementById('genBtnText').textContent    = isAI ? 'Generate Document' : 'Search / Generate (Free)';
+  document.getElementById('emptyModeBadge').innerHTML  = `<span class="mode-badge-big ${isAI?'ai':'free'}">${isAI?'✦ AI Mode Active':'◈ Free Mode Active'}</span>`;
+  document.getElementById('emptySub').innerHTML = isAI
+    ? 'Choose a topic, pick a length, then click Generate.<br><br><span style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted)">Short→single pass · Medium→2-pass · Long→3-pass</span>'
+    : 'Enter a topic and click Search/Generate.<br>Switch tabs above: Web Search · Samples · Library · AI Light.';
+  document.getElementById('docStatusLabel').textContent = isAI ? 'AI Mode — Ready' : 'Free Mode — Ready';
+  document.querySelectorAll('.length-card').forEach(c => {
+    if (!isAI && ['20-pages','100-pages'].includes(c.dataset.len)) c.classList.add('ai-only');
+    else c.classList.remove('ai-only');
+  });
+  updateGenBtn();
+  if (!isAI) showFreePanels();
+}
+
+/* ── FREE PANELS ── */
+function showFreePanels() {
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('docOutput').style.display  = 'none';
+  document.querySelectorAll('.free-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${activeFreePanel}`).classList.add('active');
+}
+function switchFreePanel(name, el) {
+  activeFreePanel = name;
+  document.querySelectorAll('.free-subtab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  if (appMode === 'free') showFreePanels();
+}
+
+/* ── DOMAIN PROMPTS ── */
+const DOMAIN_PROMPTS = {
+  'music':     'You are a specialist in Indian classical music, Raga science, Nada Brahman, and ethnomusicology. Use technical terminology: Shrutis, Swaras, Melakartha, Rasa theory, Nada Chikitsa.',
+  'fine-arts': 'You are a specialist in fine arts, aesthetics, art history. Draw on Eastern and Western traditions, iconography, compositional theory.',
+  'philosophy':'You are a specialist in Vedanta, Indian philosophy, consciousness studies. Reference Upanishads and philosophy of mind.',
+  'microbiology':'You are a specialist in microbiology and life sciences. Use precise scientific terminology: cellular mechanisms, molecular biology, microbial ecology.',
+  'science':   'You are a specialist in physics and interdisciplinary science. Reference established theories, empirical data, current research.',
+  'software':  'You are a specialist in software engineering. Include technical depth: algorithms, architectural patterns, best practices.',
+  'vedic':     'You are a specialist in Vedic sciences, Sanskrit, Indian cultural heritage. Reference Vedas, Upanishads, Natya Shastra, Yoga Sutras.',
+  'literature':'You are a specialist in world literature, linguistics, and literary criticism.',
+  'history':   'You are a specialist in history and archaeology. Provide historically accurate, chronologically structured analysis.',
+  'economics': 'You are a specialist in economics and public policy. Use economic theory, data analysis, and policy frameworks.',
+  'law':       'You are a specialist in jurisprudence and legal theory. Reference legal principles and legal scholarship.',
+  'medicine':  'You are a specialist in medicine and health sciences. Ground content in clinical evidence and established medical knowledge.',
+  'sacred-geometry':'You are a specialist in sacred geometry, Vedic mathematics, and mathematical principles underlying ancient architecture.',
+};
+
+/* ── WIZARD ── */
+function selectLen(el) {
+  if (el.classList.contains('ai-only')) return;
+  document.querySelectorAll('.length-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  selectedLen = el.dataset.len; selectedApproach = el.dataset.approach; selectedTokens = parseInt(el.dataset.tokens);
+  updateEstimate(); updateGenBtn();
+}
+function toggleStruct(el) {
+  const k = el.dataset.struct;
+  activeStructures.has(k) ? (activeStructures.delete(k), el.classList.remove('active')) : (activeStructures.add(k), el.classList.add('active'));
+}
+function updateEstimate() {
+  if (!selectedLen) { document.getElementById('teValue').textContent = '—'; return; }
+  const d = parseFloat(document.getElementById('depthSelect').value);
+  const e = Math.round(selectedTokens * d);
+  document.getElementById('teValue').textContent = e >= 1000 ? (e/1000).toFixed(1)+'K' : e;
+  document.getElementById('teBar').style.width = Math.max(3, Math.min(100,(e/300000)*100)) + '%';
+}
+function updateGenBtn() {
+  const hasTopic = document.getElementById('topicInput').value.trim().length > 2;
+  document.getElementById('genBtn').disabled = appMode === 'ai' ? (!hasTopic || !selectedLen || generating) : (!hasTopic || generating);
+}
+document.getElementById('topicInput').addEventListener('input', updateGenBtn);
+
+/* ── DISPATCH ── */
+function handleGenerate() { appMode === 'ai' ? generateDocAI() : runFreeMode(); }
+
+/* ── AI MODE ── */
+function buildStructureInstructions() {
+  const p = [];
+  if (activeStructures.has('cover'))      p.push('a cover page section');
+  if (activeStructures.has('toc'))        p.push('a Table of Contents');
+  if (activeStructures.has('abstract'))   p.push('an Abstract (150–200 words)');
+  if (activeStructures.has('about'))      p.push('an About the Research section');
+  if (activeStructures.has('philosophy')) p.push('a Philosophy section');
+  if (activeStructures.has('references')) p.push('a References section with 5–8 scholarly references');
+  return p.length ? `Include: ${p.join(', ')}.` : '';
+}
+function buildPrompt(topic, keywords, domain, len, depth, pass, outline) {
+  const dp = DOMAIN_PROMPTS[domain] || DOMAIN_PROMPTS['science'];
+  const kw = keywords ? `\nKeywords: ${keywords}` : '';
+  const dl = {'0.6':'concise','1':'balanced','1.5':'detailed','2':'deeply researched','3':'comprehensive'}[depth]||'balanced';
+  const lm = {
+    '5-liner':   'Write exactly 5 precise sentences.',
+    '20-liner':  'Write exactly 20 lines covering the topic thoroughly.',
+    '40-liner':  'Write approximately 40 lines.',
+    '100-liner': 'Write approximately 100 lines forming a complete article.',
+    '3-pages':   pass===1?'Generate a detailed section-by-section outline.':`Using:\n${outline}\n\nWrite the full 3-page document (~750 words).`,
+    '9-pages':   pass===1?'Generate a chapter outline with 6–8 sections.':`Using:\n${outline}\n\nWrite a full section (~450 words).`,
+    '20-pages':  pass===1?'Generate a comprehensive chapter outline.':pass===2?`Expand this section:\n${outline}`:'Write the final integration section.',
+    '100-pages': pass===1?'Generate the master outline with chapters and subsections.':`Write chapter ${outline} in full (~2,000 words).`,
+  };
+  return `${dp}\n\nTopic: ${topic}${kw}\nStyle: ${dl}\n${buildStructureInstructions()}\n\n${lm[len]||'Write a comprehensive research document.'}\n\nUse Markdown headings (##, ###). Begin directly.`;
+}
+async function callProxy(messages, maxTokens) {
+  const res = await fetch(`${PROXY_URL}/api/generate`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ messages, max_tokens: Math.min(maxTokens,8000) })
+  });
+  if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e?.error||`HTTP ${res.status}`); }
+  const d = await res.json();
+  return d.content?.[0]?.text || '';
+}
+async function generateDocAI() {
+  if (generating) return;
+  generating = true; updateGenBtn();
+  const topic    = document.getElementById('topicInput').value.trim();
+  const keywords = document.getElementById('keywordsInput').value.trim();
+  const domain   = document.getElementById('domainSelect').value;
+  const depth    = document.getElementById('depthSelect').value;
+  const dlabel   = document.getElementById('domainSelect').options[document.getElementById('domainSelect').selectedIndex].text;
+  rawText = '';
+  document.getElementById('emptyState').style.display='none';
+  document.querySelectorAll('.free-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('docOutput').style.display='block';
+  document.getElementById('docOutput').innerHTML='';
+  document.getElementById('progressIndicator').style.display='flex';
+  ['copyBtn','dlBtn','clearBtn'].forEach(id=>document.getElementById(id).style.display='none');
+  setStatus(`Generating ${selectedLen} on "${topic}"…`);
+  const msg = p => [{ role:'user', content:p }];
+  try {
+    let result = '';
+    if (selectedApproach==='single') {
+      setProgress('Generating…');
+      result = await callProxy(msg(buildPrompt(topic,keywords,domain,selectedLen,depth,0,null)), Math.min(Math.round(selectedTokens*parseFloat(depth)),4000));
+    } else if (selectedApproach==='2pass') {
+      showChunkLog([{label:'Pass 1 — Outline',state:'pending'},{label:'Pass 2 — Content',state:'waiting'}]);
+      setProgress('Pass 1: Outline…');
+      const outline = await callProxy(msg(buildPrompt(topic,keywords,domain,selectedLen,depth,1,null)),800);
+      updateChunkLog(0,'ok'); setProgress('Pass 2: Writing…'); updateChunkLog(1,'pending');
+      result = await callProxy(msg(buildPrompt(topic,keywords,domain,selectedLen,depth,2,outline)), Math.min(Math.round(selectedTokens*parseFloat(depth)),8000));
+      updateChunkLog(1,'ok');
+    } else if (selectedApproach==='3pass') {
+      showChunkLog([{label:'Outline',state:'pending'},{label:'Expand',state:'waiting'},{label:'Integrate',state:'waiting'}]);
+      const o = await callProxy(msg(buildPrompt(topic,keywords,domain,selectedLen,depth,1,null)),1000); updateChunkLog(0,'ok');
+      updateChunkLog(1,'pending'); const e2 = await callProxy(msg(buildPrompt(topic,keywords,domain,selectedLen,depth,2,o)),6000); updateChunkLog(1,'ok');
+      updateChunkLog(2,'pending'); const f = await callProxy(msg(buildPrompt(topic,keywords,domain,selectedLen,depth,3,e2)),4000); updateChunkLog(2,'ok');
+      result = e2 + '\n\n' + f;
+    } else if (selectedApproach==='chunked') {
+      showChunkLog([{label:'Outline',state:'pending'},...Array.from({length:5},(_,i)=>({label:`Chapter ${i+1}`,state:'waiting'}))]);
+      const o = await callProxy(msg(buildPrompt(topic,keywords,domain,selectedLen,depth,1,null)),1200); updateChunkLog(0,'ok');
+      let chapters = '';
+      for (let i=0;i<5;i++) { updateChunkLog(i+1,'pending'); setProgress(`Chapter ${i+1}/5…`); const ch = await callProxy(msg(buildPrompt(topic,keywords,domain,selectedLen,depth,2,`Chapter ${i+1}:\n${o}`)),4000); chapters+='\n\n'+ch; updateChunkLog(i+1,'ok'); }
+      result = chapters;
+    }
+    rawText = result;
+    renderDocument(result, topic, dlabel);
+    setStatus(`AI Document ready — ${selectedLen}`);
+    document.getElementById('progressIndicator').style.display='none';
+    ['copyBtn','dlBtn','clearBtn'].forEach(id=>document.getElementById(id).style.display='');
+  } catch(e) {
+    document.getElementById('progressIndicator').style.display='none';
+    document.getElementById('docOutput').innerHTML=`<div class="error-box"><strong>⚠ Error</strong><br>${e.message}<br><small>Check your proxy server is running at ${PROXY_URL}</small></div>`;
+    setStatus('Error — check proxy server');
+  }
+  generating = false; updateGenBtn();
+}
+
+/* ── FREE MODE ── */
+async function runFreeMode() {
+  const topic = document.getElementById('topicInput').value.trim();
+  if (!topic) return;
+  generating = true; updateGenBtn();
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('docOutput').style.display='none';
+  document.getElementById('progressIndicator').style.display='flex';
+  setProgress('Running free mode…');
+  await Promise.allSettled([ runWebSearch(topic), runSampleDocs(topic), runAILight(topic) ]);
+  showFreePanels();
+  document.getElementById('progressIndicator').style.display='none';
+  setStatus(`Free results for "${topic}"`);
+  generating = false; updateGenBtn();
+}
+
+/* 1 — Web Search (DuckDuckGo Instant Answer, no key) */
+async function runWebSearch(topic) {
+  const c = document.getElementById('searchResults');
+  c.innerHTML = '<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);padding:1rem 0">Searching…</div>';
+  try {
+    const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(topic)}&format=json&no_redirect=1&no_html=1&skip_disambig=1`;
+    const data = await fetch(url).then(r=>r.json());
+    let html = '';
+    if (data.AbstractText) html += mkCard(data.Heading||topic, data.AbstractURL, data.AbstractText, data.AbstractSource);
+    (data.RelatedTopics||[]).slice(0,6).forEach(t => { if(t.Text&&t.FirstURL) html += mkCard(t.Text.split(' - ')[0], t.FirstURL, t.Text, 'DuckDuckGo'); });
+    c.innerHTML = html || '<div class="empty-state" style="height:auto;padding:2rem"><div class="empty-icon" style="font-size:2rem">🔍</div><div class="empty-sub">No instant results. Try a more specific topic.</div></div>';
+  } catch(e) { c.innerHTML=`<div class="error-box">Search error: ${e.message}</div>`; }
+}
+function mkCard(title,url,snippet,src){
+  return `<div class="search-result-card"><div class="src-title">${esc(title)}</div><div class="src-url">${esc(src||'')} · <a href="${esc(url)}" target="_blank" style="color:var(--teal);text-decoration:none">${esc(url.slice(0,55))}…</a></div><div class="src-snippet">${esc(snippet)}</div></div>`;
+}
+
+/* 2 — Sample Docs */
+const SAMPLES = {
+  'music':       { title:'Raga Yaman and Its Evening Character', body:`## Overview\nRaga Yaman is one of the most fundamental ragas of Hindustani classical music, associated with the late evening hours and the Kalyan thaat. Its hallmark is the tivra (sharp) Madhyam, which lends it a luminous, expansive quality.\n\n## Mood and Rasa\nYaman evokes Shringar rasa — the sentiment of beauty, love, and aesthetic delight. Its notes create an atmosphere of early evening serenity, ideal for contemplative improvisation.\n\n## Structure\nAroha: Ni Re Ga Ma(♯) Pa Dha Ni Ṡa. Avaroha: Ṡa Ni Dha Pa Ma(♯) Ga Re Sa. Vadi: Ga · Samvadi: Ni.` },
+  'philosophy':  { title:'Advaita Vedanta: The Nature of Non-Dual Reality', body:`## Introduction\nAdvaita Vedanta, systematized by Adi Shankaracharya in the 8th century CE, posits that Brahman — pure, undifferentiated consciousness — is the sole reality. All apparent multiplicity is Maya.\n\n## Core Tenets\nThe mahavakya "Aham Brahmasmi" encapsulates the identity of Atman with Brahman. Ignorance (Avidya) veils this truth, producing the illusion of a separate ego.\n\n## Liberation\nMoksha is not an achievement but a recognition — the dissolution of the false self-sense through jnana.` },
+  'science':     { title:'Wave-Particle Duality in Quantum Mechanics', body:`## Introduction\nWave-particle duality establishes that every quantum entity exhibits both wave-like and particle-like properties depending on the experimental context.\n\n## Historical Background\nYoung's double-slit experiment (1801) demonstrated light's wave nature. Einstein's 1905 photoelectric paper established the photon. De Broglie (1924) extended duality to matter.\n\n## Implications\nThe Copenhagen interpretation holds that measurement collapses the wave function, challenging classical notions of determinism.` },
+  'vedic':       { title:'The Pancha Mahabhuta: Five Great Elements', body:`## Overview\nVedic cosmology describes five great elements: Akasha (space), Vayu (air), Agni (fire), Apas (water), and Prithvi (earth).\n\n## Interrelation\nEach element arises from the subtler element preceding it, cascading from pure consciousness through vibratory sound to tangible matter.\n\n## Application\nAyurveda, Vastu Shastra, and Indian classical arts are structured around balancing these five elements to harmonise individual and cosmic wellbeing.` },
+  'microbiology':{ title:'The Human Microbiome: Diversity and Health', body:`## Overview\nThe human microbiome comprises ~38 trillion microbial cells, primarily resident in the gut, profoundly influencing immune function, metabolism, and neurological health.\n\n## Key Findings\nThe Human Microbiome Project identified over 10,000 microbial species. Dysbiosis has been linked to inflammatory bowel disease, obesity, and depression.\n\n## Future Directions\nFaecal microbiota transplantation (FMT) and precision probiotics represent emerging therapeutic strategies.` },
+};
+function runSampleDocs(topic) {
+  const domain = document.getElementById('domainSelect').value;
+  const s = SAMPLES[domain] || SAMPLES['science'];
+  const date = new Date().toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('sampleDocs').innerHTML = `
+    <div style="background:var(--cream);border:1px solid var(--border-strong);border-radius:8px;padding:1.5rem;margin-bottom:1rem">
+      <span class="doc-domain-tag">${esc(domain.toUpperCase())}</span>
+      <h1 style="font-family:'Playfair Display',serif;font-size:1.5rem;margin:0.5rem 0">${esc(s.title)}</h1>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${date} · Sample · Research Forge</div>
+    </div>
+    <div class="doc-body">${md2html(s.body)}</div>
+    <p style="font-size:12px;color:var(--muted);margin-top:1rem;font-family:'DM Mono',monospace">Sample for <strong>${domain}</strong> domain. Switch to AI Mode for a fully generated document on your specific topic.</p>`;
+}
+
+/* 3 — Library */
+const LIBRARY = [
+  {domain:'Music',     title:'Bhairavi at Dawn',          meta:'Raga · Therapeutics · 3 pages'},
+  {domain:'Vedic',     title:'Pancha Kosha Model',        meta:'Vedanta · Anatomy · 5 pages'},
+  {domain:'Science',   title:'Quantum Entanglement',      meta:'Physics · Fundamentals · 4 pages'},
+  {domain:'Philosophy',title:'Maya and Consciousness',    meta:'Advaita · Non-dualism · 6 pages'},
+  {domain:'Fine Arts', title:'Tanjore Painting Tradition',meta:'Visual Arts · Heritage · 3 pages'},
+  {domain:'Microbiology',title:'Gut-Brain Axis',          meta:'Neuroscience · Microbiome · 5 pages'},
+  {domain:'History',   title:'Vijayanagara Empire',       meta:'Medieval India · Culture · 8 pages'},
+  {domain:'Software',  title:'Reactive Architecture',     meta:'Design Patterns · Systems · 4 pages'},
+];
+function populateLibrary() {
+  document.getElementById('libraryGrid').innerHTML = LIBRARY.map((item,i) =>
+    `<div class="lib-card" onclick='loadLibItem(${JSON.stringify(item)})'><div class="lib-domain">${esc(item.domain.toUpperCase())}</div><div class="lib-title">${esc(item.title)}</div><div class="lib-meta">${esc(item.meta)}</div></div>`
+  ).join('');
+}
+function loadLibItem(item) {
+  const k = item.domain.toLowerCase().replace(/\s/g,'');
+  const s = SAMPLES[k] || { title:item.title, body:`## ${item.title}\n\nThis document is available in full via AI Mode. Switch to AI Mode to generate a complete scholarly document.\n\n**Domain:** ${item.domain}\n**Details:** ${item.meta}` };
+  document.getElementById('emptyState').style.display='none';
+  document.querySelectorAll('.free-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('docOutput').style.display='block';
+  rawText = s.body;
+  renderDocument(s.body, item.title, item.domain);
+  ['copyBtn','dlBtn','clearBtn'].forEach(id=>document.getElementById(id).style.display='');
+  setStatus(`Library: ${item.title}`);
+}
+
+/* 4 — AI Light (HuggingFace, free, no key) */
+async function runAILight(topic) {
+  const len = selectedLen || '5-liner';
+  if (!['5-liner','20-liner'].includes(len)) return;
+  const c = document.getElementById('aiLightOutput');
+  c.innerHTML = '<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);padding:1rem 0">⚡ AI Light generating (free model)…</div>';
+  const prompt = `Write a ${len==='5-liner'?'5-sentence':'20-sentence'} scholarly research summary about: ${topic}. Be informative and precise.`;
+  try {
+    const res = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ inputs: prompt, parameters: { max_new_tokens:400, temperature:0.7 } })
+    });
+    if (!res.ok) throw new Error(`Model may be loading (${res.status}) — wait 20 seconds and try again`);
+    const data = await res.json();
+    const text = (Array.isArray(data) ? data[0]?.generated_text : data?.generated_text) || '';
+    const clean = text.replace(prompt,'').trim();
+    c.innerHTML = `<div style="background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:1.25rem">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:0.75rem;letter-spacing:0.08em">⚡ AI LIGHT · FREE · MISTRAL-7B</div>
+      <div class="doc-body" style="margin:0">${md2html(clean)}</div></div>`;
+  } catch(e) {
+    c.innerHTML = `<div class="error-box">AI Light: ${e.message}<br><small>Free HuggingFace models cold-start — wait 20s and try again.</small></div>`;
+  }
+}
+
+/* ── RENDER ── */
+function renderDocument(md, topic, domainLabel) {
+  const date  = new Date().toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'});
+  const depth = document.getElementById('depthSelect').options[document.getElementById('depthSelect').selectedIndex].text;
+  let html = '';
+  if (activeStructures.has('cover')) {
+    html += `<div class="doc-cover"><span class="doc-domain-tag">${esc(domainLabel)}</span><h1>${esc(topic)}</h1>
+      <div class="doc-meta"><span>${selectedLen?selectedLen.replace('-',' '):'Free'}</span><span>${depth}</span><span>${date}</span><span>Research Forge · Cultural Musings</span></div></div>`;
+  }
+  html += `<div class="doc-body">${md2html(md)}</div>`;
+  document.getElementById('docOutput').innerHTML = html;
+}
+function md2html(md) {
+  return md.replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^#### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>').replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/^(\d+)\. (.+)$/gm,'<li>$2</li>').replace(/(<li>.*<\/li>\n?)+/g,m=>`<ul>${m}</ul>`)
+    .replace(/\n\n/g,'</p><p>').replace(/(<\/h[23]>|<\/blockquote>|<\/ul>)\s*<\/p><p>/g,'$1')
+    .replace(/<p><h/g,'<h').replace(/<\/h([23])><\/p>/g,'</h$1>')
+    .replace(/<p><ul>/g,'<ul>').replace(/<\/ul><\/p>/g,'</ul>')
+    .replace(/<p><blockquote>/g,'<blockquote>').replace(/<\/blockquote><\/p>/g,'</blockquote>')
+    .replace(/^/,'<p>').replace(/$/,'</p>');
+}
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ── CHUNK LOG ── */
+let chunkStates=[];
+function showChunkLog(items){ chunkStates=items.map(i=>({...i})); renderChunkLog(); }
+function updateChunkLog(i,s){ if(chunkStates[i]){chunkStates[i].state=s;renderChunkLog();} }
+function renderChunkLog(){
+  const ic={ok:'✓',pending:'<span class="cl-spin">◌</span>',waiting:'○'};
+  const cl={ok:'cl-ok',pending:'cl-pending',waiting:''};
+  const h=chunkStates.map(c=>`<div class="cl-line"><span class="${cl[c.state]}">${ic[c.state]}</span> ${c.label}</div>`).join('');
+  const ex=document.querySelector('.chunk-log');
+  if(ex){ex.innerHTML=h;return;}
+  const el=document.createElement('div');el.className='chunk-log';el.innerHTML=h;
+  document.getElementById('docOutput').prepend(el);
+}
+
+/* ── HELPERS ── */
+function setStatus(m){ document.getElementById('docStatusLabel').textContent=m; }
+function setProgress(m){ document.getElementById('progressMsg').textContent=m; }
+function copyOutput(){ navigator.clipboard.writeText(rawText).then(()=>{ const b=document.getElementById('copyBtn');b.textContent='Copied ✓';setTimeout(()=>b.textContent='Copy Text',2000); }); }
+function downloadOutput(){
+  const t=document.getElementById('topicInput').value.trim().replace(/\s+/g,'_').slice(0,40);
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([rawText],{type:'text/plain'})); a.download=`research_${t}_${selectedLen||'free'}.txt`; a.click();
+}
+function clearOutput(){
+  rawText=''; document.getElementById('docOutput').style.display='none';
+  document.querySelectorAll('.free-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('emptyState').style.display='flex';
+  ['copyBtn','dlBtn','clearBtn'].forEach(id=>document.getElementById(id).style.display='none');
+  setStatus(appMode==='ai'?'AI Mode — Ready':'Free Mode — Ready');
+  document.querySelectorAll('.length-card').forEach(c=>c.classList.remove('active'));
+  selectedLen=null; selectedTokens=0;
+  document.getElementById('teValue').textContent='—';
+  document.getElementById('teBar').style.width='3%';
+  updateGenBtn();
+}
+</script>
+</body>
+</html>
