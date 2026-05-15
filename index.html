@@ -1,912 +1,1405 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sapta Swaras — Deep Research Portal | culturalmusings.com Part II</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sacred Music Portal — Sri Rudram & Sapta Swaras</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Sans+Devanagari:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
+/* ══════════════════════════════════════════════
+   DESIGN SYSTEM — Unified Sacred Dark Theme
+══════════════════════════════════════════════ */
 :root {
-  --gold: #C9A84C; --gold-light: #E8CC7A; --gold-dim: #8A6E30;
-  --deep: #0D0A06; --surface: #13100B; --surface2: #1C1810; --surface3: #252015;
-  --border: rgba(201,168,76,0.18); --border-glow: rgba(201,168,76,0.4);
-  --text: #E8E0CC; --text-dim: #9A9080; --text-muted: #5A5040;
-  --swara-sa:#C44A2A; --swara-ra:#D4862A; --swara-ga:#8BAA28;
-  --swara-ma:#2A9A6A; --swara-pa:#2A7AC4; --swara-da:#6A4AC4; --swara-ni:#C42A7A;
-  --vault-bg: #0A0806; --vault-border: rgba(201,168,76,0.35);
+  --bg:       #08000A;
+  --bg2:      #0F0012;
+  --bg3:      #160019;
+  --bg4:      #0A0008;
+  --surface:  #110015;
+  --surface2: #1A001F;
+  --surface3: #210027;
+  --border:   rgba(180,120,220,0.14);
+  --border2:  rgba(180,120,220,0.07);
+  --border3:  rgba(201,146,42,0.18);
+  --gold:     #C9922A;
+  --gold2:    #E8BA60;
+  --gold3:    #F5D98A;
+  --violet:   #9B4DCA;
+  --violet2:  #C480FF;
+  --violet3:  #DEB8FF;
+  --saffron:  #E07820;
+  --cream:    #F0DEC8;
+  --cream2:   #D4BEA0;
+  --cream3:   #9A8070;
+  --muted:    #503844;
+  --green-ok: #2DD4A0;
+  --red-err:  #F87171;
+  --swara-sa: #C44A2A; --swara-ri: #D4862A; --swara-ga: #8BAA28;
+  --swara-ma: #2A9A6A; --swara-pa: #2A7AC4; --swara-da: #6A4AC4; --swara-ni: #C42A7A;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--deep);color:var(--text);font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.8;min-height:100vh;overflow-x:hidden}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.8;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(180,120,220,0.25); border-radius: 2px; }
+::-webkit-scrollbar-track { background: transparent; }
 
-/* ── NAV ── */
-nav{position:sticky;top:0;z-index:200;background:rgba(13,10,6,0.97);border-bottom:.5px solid var(--border);backdrop-filter:blur(12px);padding:0 1.5rem;display:flex;align-items:center;gap:0;overflow-x:auto}
-.nav-logo{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.12em;color:var(--gold-dim);white-space:nowrap;padding:1rem 1.2rem 1rem 0;border-right:.5px solid var(--border);margin-right:.8rem}
-.nav-swara-btn{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.08em;color:var(--text-dim);background:none;border:none;cursor:pointer;padding:1rem .75rem;white-space:nowrap;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
-.nav-swara-btn:hover,.nav-swara-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
-.nav-right{margin-left:auto;display:flex;gap:.4rem;align-items:center;flex-shrink:0}
-.nav-btn{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;background:none;border:.5px solid var(--border);border-radius:4px;color:var(--gold-dim);cursor:pointer;padding:.35rem .7rem;white-space:nowrap;transition:all .2s}
-.nav-btn:hover{border-color:var(--gold);color:var(--gold)}
-.nav-btn.vault-active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08)}
+/* ── TOP NAV ── */
+.top-nav {
+  display: flex; align-items: center; gap: 0;
+  background: rgba(8,0,10,0.95);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  padding: 0 16px;
+  flex-shrink: 0;
+  height: 48px;
+  z-index: 50;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  padding-right: 20px;
+  border-right: 1px solid var(--border);
+  margin-right: 8px;
+  text-decoration: none;
+}
+.nav-om { font-size: 1.6rem; color: var(--gold); line-height:1; text-shadow: 0 0 16px rgba(201,146,42,0.5); }
+.nav-brand-text { font-family: 'Cinzel Decorative', serif; font-size: 0.55rem; font-weight: 700; color: var(--gold2); letter-spacing: 2px; line-height: 1.35; }
+.nav-section-btn {
+  font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 2px;
+  text-transform: uppercase; background: none; border: none;
+  color: var(--cream3); cursor: pointer; padding: 0 14px; height: 48px;
+  border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap;
+}
+.nav-section-btn:hover { color: var(--cream); }
+.nav-section-btn.active { color: var(--gold2); border-bottom-color: var(--gold); }
+.nav-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.vault-btn {
+  font-family: 'Cinzel', serif; font-size: 0.52rem; letter-spacing: 1.5px;
+  background: rgba(155,77,202,0.1); border: 1px solid rgba(155,77,202,0.3);
+  color: var(--violet2); cursor: pointer; padding: 6px 14px;
+  transition: all 0.2s; white-space: nowrap; border-radius: 2px;
+}
+.vault-btn:hover { background: rgba(155,77,202,0.2); border-color: var(--violet); }
+.vault-btn.key-active { border-color: var(--green-ok); color: var(--green-ok); background: rgba(45,212,160,0.08); }
+.progress-bar-wrap { height: 2px; background: var(--border2); flex-shrink: 0; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--saffron), var(--gold2), var(--violet)); transition: width 0.4s ease; }
 
 /* ── VAULT OVERLAY ── */
-#vault-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px)}
-#vault-overlay.open{display:flex;align-items:center;justify-content:center}
-.vault-panel{background:var(--vault-bg);border:1px solid var(--vault-border);border-radius:10px;width:min(860px,96vw);max-height:88vh;overflow-y:auto;padding:2rem;position:relative;box-shadow:0 0 60px rgba(201,168,76,0.12)}
-.vault-title{font-family:'Cinzel',serif;font-size:1.1rem;letter-spacing:.15em;color:var(--gold);margin-bottom:.4rem}
-.vault-sub{font-size:.85rem;color:var(--text-muted);margin-bottom:1.5rem;font-style:italic}
-.vault-close{position:absolute;top:1.2rem;right:1.2rem;background:none;border:.5px solid var(--border);border-radius:4px;color:var(--text-muted);cursor:pointer;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;padding:.3rem .7rem;transition:all .2s}
-.vault-close:hover{color:var(--gold);border-color:var(--gold)}
-.vault-master-row{display:flex;gap:.75rem;align-items:center;margin-bottom:1.5rem;padding:.75rem 1rem;background:var(--surface);border:.5px solid var(--border);border-radius:6px;flex-wrap:wrap}
-.vault-master-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.15em;color:var(--gold-dim)}
-.vault-status-dot{width:8px;height:8px;border-radius:50%;background:var(--swara-sa);flex-shrink:0}
-.vault-status-dot.ok{background:var(--swara-ga)}
-.vault-status-dot.empty{background:var(--text-muted)}
-.vault-lock-btn{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;background:var(--gold-dim);border:none;border-radius:4px;color:var(--deep);padding:.35rem 1rem;cursor:pointer;transition:background .2s;margin-left:auto}
-.vault-lock-btn:hover{background:var(--gold)}
-.vault-lock-btn.locked{background:var(--swara-ga);color:#fff}
-.vault-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:.75rem}
-.vault-slot{background:var(--surface2);border:.5px solid var(--border);border-radius:6px;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.5rem;transition:border-color .2s}
-.vault-slot.has-key{border-color:rgba(201,168,76,0.3)}
-.vault-slot.active-key{border-color:var(--gold)}
-.slot-top{display:flex;align-items:center;gap:.6rem}
-.slot-num{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.15em;color:var(--text-muted);min-width:28px}
-.slot-name-input{background:transparent;border:none;border-bottom:.5px solid var(--border);color:var(--gold-dim);font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;padding:.15rem .3rem;width:120px;outline:none;transition:border-color .2s}
-.slot-name-input:focus{border-bottom-color:var(--gold)}
-.slot-name-input::placeholder{color:var(--text-muted)}
-.slot-use-btn{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.1em;background:none;border:.5px solid var(--border);border-radius:3px;color:var(--text-muted);cursor:pointer;padding:.2rem .6rem;margin-left:auto;transition:all .2s;white-space:nowrap}
-.slot-use-btn:hover{border-color:var(--gold);color:var(--gold)}
-.slot-use-btn.in-use{background:rgba(201,168,76,0.12);border-color:var(--gold);color:var(--gold)}
-.slot-key-wrap{display:flex;gap:.5rem;align-items:center}
-.slot-key-input{flex:1;background:var(--deep);border:.5px solid var(--border);border-radius:4px;color:var(--text-dim);font-family:monospace;font-size:11px;padding:.3rem .6rem;outline:none;transition:border-color .2s}
-.slot-key-input:focus{border-color:var(--gold-dim)}
-.slot-key-input::placeholder{color:var(--text-muted)}
-.slot-key-input[readonly]{cursor:default;opacity:.7}
-.slot-toggle-btn{background:none;border:.5px solid var(--border);border-radius:3px;color:var(--text-muted);cursor:pointer;font-size:11px;padding:.25rem .5rem;transition:all .2s;white-space:nowrap}
-.slot-toggle-btn:hover{border-color:var(--gold-dim);color:var(--gold-dim)}
-.slot-indicator{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.1em;color:var(--text-muted);min-height:14px}
-.slot-indicator.ok{color:var(--swara-ga)}
-.slot-indicator.active{color:var(--gold)}
+.vault-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.8); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center;
+}
+.vault-overlay.open { display: flex; }
+.vault-panel {
+  background: var(--bg2); border: 1px solid rgba(155,77,202,0.4);
+  border-radius: 8px; width: min(900px,95vw); max-height: 86vh;
+  overflow-y: auto; padding: 24px; position: relative;
+  box-shadow: 0 0 80px rgba(155,77,202,0.15);
+  scrollbar-width: thin; scrollbar-color: rgba(155,77,202,0.2) transparent;
+}
+.vault-panel-title { font-family: 'Cinzel Decorative', serif; font-size: 0.85rem; color: var(--violet2); margin-bottom: 4px; }
+.vault-panel-sub { font-size: 0.8rem; color: var(--cream3); font-style: italic; margin-bottom: 20px; }
+.vault-close-btn {
+  position: absolute; top: 16px; right: 16px;
+  background: none; border: 1px solid var(--border); color: var(--cream3);
+  font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 1px;
+  cursor: pointer; padding: 5px 12px; border-radius: 2px; transition: all 0.2s;
+}
+.vault-close-btn:hover { border-color: var(--violet); color: var(--violet2); }
+.vault-info-row {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; margin-bottom: 16px; font-size: 0.8rem;
+}
+.vault-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink:0; }
+.vault-dot.ok { background: var(--green-ok); box-shadow: 0 0 8px rgba(45,212,160,0.4); }
+.vault-info-label { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: var(--cream3); flex: 1; }
+.vault-slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 8px; }
+.vault-slot {
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 4px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px;
+  transition: border-color 0.2s;
+}
+.vault-slot.has-key { border-color: rgba(155,77,202,0.25); }
+.vault-slot.is-active { border-color: rgba(45,212,160,0.4); }
+.vslot-top { display: flex; align-items: center; gap: 6px; }
+.vslot-num { font-family: 'JetBrains Mono', monospace; font-size: 0.45rem; color: #333; min-width: 22px; }
+.vslot-name {
+  background: transparent; border: none; border-bottom: 1px solid var(--border2);
+  color: var(--cream3); font-family: 'Cinzel', monospace; font-size: 0.55rem;
+  letter-spacing: 0.5px; padding: 2px 4px; width: 120px; outline: none;
+  transition: border-color 0.2s;
+}
+.vslot-name:focus { border-bottom-color: var(--violet); }
+.vslot-name::placeholder { color: #2a2a2a; }
+.vslot-use {
+  margin-left: auto; font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 1px;
+  background: none; border: 1px solid var(--border); color: var(--cream3);
+  cursor: pointer; padding: 3px 8px; border-radius: 2px; transition: all 0.2s; white-space: nowrap;
+}
+.vslot-use:hover { border-color: var(--violet); color: var(--violet2); }
+.vslot-use.in-use { border-color: var(--green-ok); color: var(--green-ok); background: rgba(45,212,160,0.07); }
+.vslot-key-row { display: flex; gap: 6px; }
+.vslot-key-inp {
+  flex: 1; background: var(--bg4); border: 1px solid var(--border2); border-radius: 3px;
+  color: var(--cream3); font-family: 'JetBrains Mono', monospace; font-size: 0.55rem;
+  padding: 4px 8px; outline: none; transition: border-color 0.2s;
+}
+.vslot-key-inp:focus { border-color: rgba(155,77,202,0.4); }
+.vslot-key-inp::placeholder { color: #1e1e1e; }
+.vslot-eye {
+  background: none; border: 1px solid var(--border2); border-radius: 2px;
+  color: var(--cream3); cursor: pointer; padding: 3px 7px; font-size: 0.65rem;
+  transition: all 0.2s;
+}
+.vslot-eye:hover { border-color: var(--violet); }
+.vslot-ind { font-family: 'JetBrains Mono', monospace; font-size: 0.42rem; color: #2a2a2a; min-height: 14px; }
+.vslot-ind.ok { color: rgba(45,212,160,0.6); }
+.vslot-ind.active { color: var(--green-ok); }
+.vault-footer-row { display: flex; gap: 10px; align-items: center; margin-top: 14px; flex-wrap: wrap; }
+.vault-clear-btn {
+  font-family: 'Cinzel', serif; font-size: 0.48rem; letter-spacing: 1px;
+  background: none; border: 1px solid rgba(248,113,113,0.3); color: #F87171;
+  cursor: pointer; padding: 6px 16px; border-radius: 2px; transition: all 0.2s;
+}
+.vault-clear-btn:hover { background: rgba(248,113,113,0.1); }
+.vault-provider-note { font-size: 0.75rem; color: var(--cream3); font-style: italic; flex: 1; }
 
-/* ── HERO ── */
-.hero{padding:5rem 2rem 3.5rem;text-align:center;border-bottom:.5px solid var(--border);position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(201,168,76,.06) 0%,transparent 70%);pointer-events:none}
-.hero-tag{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;color:var(--gold-dim);margin-bottom:1.5rem;display:block}
-.hero h1{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(2rem,6vw,4rem);color:var(--gold);line-height:1.15;margin-bottom:.4rem}
-.hero h2{font-family:'Cormorant Garamond',serif;font-weight:300;font-style:italic;font-size:clamp(1rem,2.5vw,1.5rem);color:var(--text-dim);margin-bottom:1.8rem}
-.hero-desc{max-width:680px;margin:0 auto 2rem;font-size:.95rem;color:var(--text-dim);line-height:1.9}
-.octave-legend{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
-.oct-pill{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.15em;padding:.3rem 1rem;border:.5px solid var(--border);border-radius:2px;color:var(--text-dim)}
-.oct-pill span{color:var(--gold-dim);margin-right:.4rem}
+/* ══════════════════════════════════════════════
+   SHARED SECTIONS WRAPPER
+══════════════════════════════════════════════ */
+.app-body { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.section-view { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+.section-view.active { display: flex; }
 
-/* ── SWARA GRID ── */
-.swara-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;border:.5px solid var(--border);margin:0 2rem 3rem;border-radius:4px;overflow:hidden}
-.swara-card{background:var(--surface);padding:1.75rem 1.4rem;cursor:pointer;transition:background .25s;position:relative;border-right:1px solid var(--border)}
-.swara-card:last-child{border-right:none}
-.swara-card:hover{background:var(--surface2)}
-.swara-accent{position:absolute;top:0;left:0;right:0;height:2px}
-.swara-num{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em;color:var(--text-muted);margin-bottom:.6rem}
-.swara-devanagari{font-size:2.6rem;line-height:1;margin-bottom:.4rem}
-.swara-name{font-family:'Cinzel',serif;font-size:.95rem;letter-spacing:.1em;color:var(--gold);margin-bottom:.2rem}
-.swara-fullname{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;color:var(--text-dim);margin-bottom:.6rem}
-.swara-hz{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--text-muted)}
-.swara-hz span{color:var(--gold-dim)}
-.freq-bar-wrap{margin:.8rem 0}
-.freq-label{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.12em;color:var(--text-muted);margin-bottom:.3rem}
-.freq-row{display:flex;align-items:center;gap:.6rem}
-.freq-bar{height:3px;border-radius:2px;flex:1;background:var(--surface3);overflow:hidden}
-.freq-fill{height:100%;border-radius:2px}
-.freq-hz{font-family:'Cinzel',serif;font-size:10px;color:var(--text-dim);min-width:56px;text-align:right}
+/* ══════════════════════════════════════════════
+   HOME SECTION
+══════════════════════════════════════════════ */
+.home-view { flex: 1; overflow-y: auto; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+.home-content { max-width: 800px; text-align: center; }
+.home-om { font-size: 6rem; color: var(--gold); display: block; margin-bottom: 24px;
+  text-shadow: 0 0 60px rgba(201,146,42,0.5); animation: glow-pulse 3s ease-in-out infinite; }
+@keyframes glow-pulse { 0%,100% { text-shadow: 0 0 40px rgba(201,146,42,0.3); } 50% { text-shadow: 0 0 100px rgba(155,77,202,0.5), 0 0 60px rgba(201,146,42,0.4); } }
+.home-title { font-family: 'Cinzel Decorative', serif; font-size: clamp(1.2rem,4vw,2rem); color: var(--cream); margin-bottom: 10px; letter-spacing: 2px; }
+.home-sub { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.1rem; color: var(--cream3); margin-bottom: 32px; }
+.home-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+@media(max-width:600px) { .home-cards { grid-template-columns: 1fr; } }
+.home-card {
+  background: var(--surface); border: 1px solid var(--border3); padding: 28px 24px;
+  cursor: pointer; transition: all 0.3s; text-align: left; position: relative; overflow: hidden;
+}
+.home-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.home-card.rudram::before { background: linear-gradient(90deg, var(--saffron), var(--gold2)); }
+.home-card.swaras::before { background: linear-gradient(90deg, var(--swara-sa), var(--swara-pa), var(--swara-ni)); }
+.home-card:hover { border-color: rgba(201,146,42,0.4); transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,0,0,0.4); }
+.hcard-icon { font-size: 2.8rem; display: block; margin-bottom: 14px; }
+.hcard-title { font-family: 'Cinzel Decorative', serif; font-size: 0.85rem; color: var(--gold2); margin-bottom: 8px; letter-spacing: 1px; }
+.hcard-desc { font-size: 0.9rem; color: var(--cream3); line-height: 1.7; margin-bottom: 14px; }
+.hcard-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+.hcard-stat { font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 1px; color: var(--gold); background: rgba(201,146,42,0.08); border: 1px solid rgba(201,146,42,0.15); padding: 3px 10px; border-radius: 2px; }
+.home-vault-hint {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 16px 22px; margin-top: 8px; font-size: 0.85rem; color: var(--cream3);
+}
+.home-vault-hint strong { color: var(--violet2); }
 
-/* ── DETAIL VIEW ── */
-.detail-view{display:none;max-width:1100px;margin:0 auto;padding:0 2rem 4rem}
-.detail-view.active{display:block}
-.detail-header{display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;padding:2.5rem 0 2rem;border-bottom:.5px solid var(--border);margin-bottom:2rem}
-.detail-symbol{font-size:4.5rem;line-height:1}
-.detail-tag{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.25em;color:var(--text-muted);margin-bottom:.5rem}
-.detail-title{font-family:'Cinzel',serif;font-size:2rem;font-weight:700;color:var(--gold);margin-bottom:.2rem}
-.detail-subtitle{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.2rem;color:var(--text-dim);margin-bottom:.9rem}
-.detail-pills{display:flex;gap:.4rem;flex-wrap:wrap}
-.detail-pill{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.1em;border:.5px solid var(--border);border-radius:2px;color:var(--text-muted);padding:.2rem .6rem}
-.back-btn{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.15em;background:none;border:none;color:var(--text-muted);cursor:pointer;padding:.5rem 0;display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;transition:color .2s}
-.back-btn:hover{color:var(--gold-dim)}
+/* ══════════════════════════════════════════════
+   LOG STRIP (shared)
+══════════════════════════════════════════════ */
+.log-strip {
+  border-top: 1px solid var(--border2); background: rgba(0,0,0,0.5);
+  padding: 0 14px; flex-shrink: 0; display: flex; align-items: center; gap: 10px; height: 26px;
+}
+.log-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.log-dot.ok  { background: var(--green-ok); }
+.log-dot.err { background: var(--red-err); }
+.log-dot.info { background: var(--gold); }
+.log-dot.ai  { background: var(--violet2); animation: pulse-dot 1s infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.log-text { font-family: 'JetBrains Mono', monospace; font-size: 0.5rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.log-time { font-family: 'JetBrains Mono', monospace; font-size: 0.45rem; color: var(--muted); flex-shrink: 0; }
+.log-provider { font-family: 'JetBrains Mono', monospace; font-size: 0.45rem; color: var(--violet2); flex-shrink: 0; padding-left: 8px; border-left: 1px solid var(--border2); }
 
-/* active key bar */
-.active-key-bar{background:var(--surface);border:.5px solid rgba(201,168,76,0.25);border-radius:4px;padding:.5rem 1rem;display:flex;align-items:center;gap:.75rem;margin-bottom:1.2rem;font-size:.82rem;flex-wrap:wrap}
-.akey-dot{width:7px;height:7px;border-radius:50%;background:var(--swara-ga);flex-shrink:0}
-.akey-dot.empty{background:var(--text-muted)}
-.akey-text{color:var(--text-dim);font-size:.8rem;flex:1}
-.akey-open{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.1em;background:none;border:.5px solid var(--border);border-radius:3px;color:var(--gold-dim);cursor:pointer;padding:.25rem .65rem;margin-left:auto;transition:all .2s;white-space:nowrap}
-.akey-open:hover{border-color:var(--gold);color:var(--gold)}
+/* ══════════════════════════════════════════════
+   RUDRAM SECTION
+══════════════════════════════════════════════ */
+.rudram-layout { flex: 1; display: flex; overflow: hidden; }
+.rudram-sidebar {
+  width: 230px; flex-shrink: 0; border-right: 1px solid var(--border2);
+  overflow-y: auto; background: rgba(0,0,0,0.3);
+  scrollbar-width: thin; scrollbar-color: rgba(201,146,42,0.15) transparent;
+}
+.rsb-group { padding: 8px 0 4px; border-bottom: 1px solid var(--border2); }
+.rsb-group-title {
+  font-family: 'Cinzel Decorative', serif; font-size: 0.4rem; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); padding: 0 12px 5px;
+}
+.rsb-item {
+  display: flex; align-items: center; gap: 8px; padding: 5px 12px;
+  cursor: pointer; transition: background 0.15s; border-left: 2px solid transparent;
+}
+.rsb-item:hover { background: rgba(201,146,42,0.06); }
+.rsb-item.active { background: rgba(201,146,42,0.1); border-left-color: var(--gold); }
+.rsb-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; background: var(--muted); }
+.rsb-dot.done { background: var(--green-ok); box-shadow: 0 0 5px rgba(45,212,160,0.4); }
+.rsb-dot.generating { background: var(--gold); animation: pulse-dot 1s infinite; }
+.rsb-dot.error { background: var(--red-err); }
+.rsb-label { font-size: 0.72rem; color: var(--cream2); line-height: 1.3; flex: 1; }
+.rsb-item.active .rsb-label { color: var(--cream); }
+.rsb-anuvaka { font-family: 'JetBrains Mono', monospace; font-size: 0.4rem; color: var(--cream3); }
+.rudram-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.rudram-toolbar {
+  display: flex; align-items: center; gap: 8px; padding: 8px 16px;
+  border-bottom: 1px solid var(--border2); background: rgba(0,0,0,0.3); flex-shrink: 0; flex-wrap: wrap;
+}
+.r-btn {
+  font-family: 'Cinzel Decorative', serif; font-size: 0.48rem; letter-spacing: 1.5px;
+  text-transform: uppercase; padding: 6px 12px; border: 1px solid var(--border3);
+  background: rgba(201,146,42,0.07); color: var(--cream2); cursor: pointer; transition: all 0.25s;
+  white-space: nowrap; border-radius: 1px;
+}
+.r-btn:hover { background: rgba(201,146,42,0.16); border-color: var(--gold); color: var(--gold3); }
+.r-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.r-btn.primary { background: rgba(201,146,42,0.18); border-color: rgba(201,146,42,0.55); color: var(--gold2); }
+.r-btn.primary:hover:not(:disabled) { background: rgba(201,146,42,0.3); }
+.r-progress-label { font-family: 'JetBrains Mono', monospace; font-size: 0.48rem; color: var(--cream3); margin-left: auto; }
+.rudram-content {
+  flex: 1; overflow-y: auto; padding: 28px 36px 36px;
+  scrollbar-width: thin; scrollbar-color: rgba(201,146,42,0.15) transparent; position: relative;
+}
+.rudram-content::before {
+  content: 'ॐ'; position: fixed; top: 55%; left: 55%; transform: translate(-50%,-50%);
+  font-size: 36vw; color: rgba(201,146,42,0.012); pointer-events: none; z-index: 0; line-height: 1;
+}
+.r-sec-header { position: relative; z-index: 1; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--border3); }
+.r-sec-header::before { content: ''; position: absolute; bottom: -1px; left: 0; width: 70px; height: 2px; background: linear-gradient(90deg, var(--gold), transparent); }
+.r-eyebrow { font-family: 'Cinzel Decorative', serif; font-size: 0.45rem; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 7px; }
+.r-sec-title { font-family: 'Cinzel Decorative', serif; font-size: 1.35rem; font-weight: 700; color: var(--cream); line-height: 1.3; margin-bottom: 5px; }
+.r-sec-sub { font-style: italic; font-size: 0.95rem; color: var(--cream3); }
+.r-welcome { position: relative; z-index: 1; max-width: 640px; margin: 36px auto; text-align: center; }
+.r-welcome-om { font-size: 4.5rem; color: var(--gold); text-shadow: 0 0 50px rgba(201,146,42,0.4); display: block; margin-bottom: 20px; animation: glow-pulse 3s ease-in-out infinite; }
+.r-welcome h2 { font-family: 'Cinzel Decorative', serif; font-size: 1.2rem; color: var(--cream); margin-bottom: 12px; }
+.r-welcome p { font-size: 0.95rem; color: var(--cream2); line-height: 1.8; margin-bottom: 10px; }
+.r-verse { font-style: italic; font-size: 0.95rem; color: var(--cream3); border-left: 2px solid var(--gold); padding: 8px 16px; margin: 18px 0; text-align: left; background: rgba(201,146,42,0.04); }
+.r-stats { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin: 20px 0; }
+.r-stat { background: rgba(201,146,42,0.06); border: 1px solid var(--border3); padding: 12px 18px; text-align: center; }
+.r-stat-num { font-family: 'Cinzel Decorative', serif; font-size: 1.5rem; color: var(--gold2); display: block; }
+.r-stat-lbl { font-size: 0.7rem; color: var(--cream3); text-transform: uppercase; letter-spacing: 1px; font-style: italic; }
+.r-gen-content { position: relative; z-index: 1; font-size: 0.95rem; line-height: 1.85; color: var(--cream2); }
+.r-gen-content h1, .r-gen-content h2 { font-family: 'Cinzel Decorative', serif; color: var(--gold2); margin: 26px 0 10px; }
+.r-gen-content h1 { font-size: 1.05rem; }
+.r-gen-content h2 { font-size: 0.88rem; }
+.r-gen-content h3 { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--saffron); margin: 20px 0 7px; border-bottom: 1px solid var(--border2); padding-bottom: 3px; }
+.r-gen-content p { margin-bottom: 12px; }
+.r-gen-content strong { color: var(--cream); }
+.r-gen-content em { color: var(--gold3); font-style: italic; }
+.r-gen-content blockquote { border-left: 3px solid var(--gold); padding: 8px 16px; margin: 14px 0; background: rgba(201,146,42,0.05); color: var(--cream); font-style: italic; }
+.r-gen-content ul, .r-gen-content ol { margin: 8px 0 12px 22px; }
+.r-gen-content li { margin-bottom: 5px; }
+.r-gen-content hr { border: none; border-top: 1px solid var(--border3); margin: 22px 0; }
+.r-loading { position: relative; z-index: 1; text-align: center; padding: 50px 20px; }
+.r-spinner { width: 44px; height: 44px; border: 2px solid var(--border3); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 18px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.r-loading p { font-style: italic; color: var(--cream3); font-size: 0.88rem; }
+.r-loading-mantra { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 1.2rem; color: var(--gold); margin-top: 10px; animation: pulse-dot 2s ease-in-out infinite; }
+.r-empty { position: relative; z-index: 1; text-align: center; padding: 50px 20px; color: var(--cream3); }
+.r-empty .r-big-icon { font-size: 2.8rem; margin-bottom: 14px; display: block; }
+.r-empty p { font-style: italic; font-size: 0.9rem; margin-bottom: 8px; }
 
-/* page tabs */
-.page-tabs{display:flex;gap:0;overflow-x:auto;border-bottom:.5px solid var(--border);margin-bottom:2rem;scrollbar-width:none}
-.page-tabs::-webkit-scrollbar{display:none}
-.page-tab{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;background:none;border:none;border-bottom:2px solid transparent;color:var(--text-muted);cursor:pointer;padding:.7rem 1.1rem;white-space:nowrap;transition:all .2s}
-.page-tab:hover{color:var(--text-dim)}
-.page-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
-.page-tab.new-tab{color:var(--swara-ga)}
-.page-tab.new-tab.active{color:var(--swara-ga);border-bottom-color:var(--swara-ga)}
+/* ══════════════════════════════════════════════
+   SAPTA SWARAS SECTION
+══════════════════════════════════════════════ */
+.swaras-view { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.swaras-nav-bar {
+  display: flex; align-items: center; gap: 0; border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,0.4); flex-shrink: 0; padding: 0 16px; overflow-x: auto; height: 38px;
+  scrollbar-width: none;
+}
+.swaras-nav-bar::-webkit-scrollbar { display: none; }
+.swara-nav-btn {
+  font-family: 'Cinzel', serif; font-size: 0.58rem; letter-spacing: 1.5px; background: none; border: none;
+  color: var(--cream3); cursor: pointer; padding: 0 14px; height: 38px;
+  border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap;
+}
+.swara-nav-btn:hover { color: var(--cream); }
+.swara-nav-btn.active { color: var(--gold2); border-bottom-color: var(--gold); }
+.swaras-content-area { flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(155,77,202,0.2) transparent; }
 
-/* page content */
-.page-content{display:none}
-.page-content.active{display:block}
+/* SWARA HERO */
+.swara-hero {
+  padding: 3rem 2rem 2.5rem; text-align: center; border-bottom: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+.swara-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(155,77,202,0.06) 0%, transparent 70%); pointer-events: none; }
+.sh-tag { font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 3px; color: var(--gold-dim, #8A6E30); margin-bottom: 1rem; display: block; }
+.sh-h1 { font-family: 'Cinzel Decorative', serif; font-weight: 700; font-size: clamp(1.8rem,5vw,3rem); color: var(--gold); line-height: 1.15; margin-bottom: 4px; }
+.sh-h2 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: clamp(0.9rem,2vw,1.3rem); color: var(--cream3); margin-bottom: 1.5rem; }
+.sh-desc { max-width: 640px; margin: 0 auto 1.5rem; font-size: 0.88rem; color: var(--cream3); line-height: 1.85; }
+.swara-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1px; border: 1px solid var(--border); margin: 0 1.5rem 2.5rem;
+  border-radius: 4px; overflow: hidden;
+}
+.swara-card {
+  background: var(--surface); padding: 1.5rem 1.2rem; cursor: pointer;
+  transition: background 0.25s; position: relative; border-right: 1px solid var(--border);
+}
+.swara-card:last-child { border-right: none; }
+.swara-card:hover { background: var(--surface2); }
+.sc-accent { position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.sc-num { font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 2px; color: var(--cream3); margin-bottom: 5px; }
+.sc-deva { font-size: 2.2rem; line-height: 1; margin-bottom: 4px; }
+.sc-name { font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 1px; color: var(--gold); margin-bottom: 2px; }
+.sc-full { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.8rem; color: var(--cream3); margin-bottom: 5px; }
+.sc-hz { font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 1px; color: var(--cream3); }
+.sc-hz span { color: var(--gold); }
+.sc-dur { font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 0.5px; color: var(--muted); margin-top: 5px; }
 
-/* octave section */
-.octave-section{margin-bottom:2.5rem;border:.5px solid var(--border);border-radius:6px;overflow:hidden}
-.octave-header{background:var(--surface2);padding:.9rem 1.4rem;display:flex;align-items:baseline;gap:1rem;border-bottom:.5px solid var(--border)}
-.octave-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em;color:var(--text-muted)}
-.octave-name{font-family:'Cinzel',serif;font-size:.95rem;letter-spacing:.06em;color:var(--gold)}
-.octave-hz{font-family:'Cinzel',serif;font-size:9px;color:var(--text-muted);margin-left:auto}
-.octave-body{padding:1.4rem}
-.para-block{margin-bottom:1.1rem;line-height:1.9;color:var(--text)}
-.para-block.loading{background:var(--surface2);border-radius:4px;padding:1rem;color:var(--text-muted);font-style:italic;font-size:.9rem;text-align:center;animation:pulse 1.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
-.gen-btn{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;background:none;border:.5px solid var(--gold-dim);border-radius:4px;color:var(--gold-dim);cursor:pointer;padding:.45rem 1.1rem;transition:all .2s;margin-bottom:1.2rem}
-.gen-btn:hover{background:rgba(201,168,76,.1);color:var(--gold);border-color:var(--gold)}
-.gen-btn:disabled{opacity:.4;cursor:not-allowed}
-.sec-divider{display:flex;align-items:center;gap:1rem;margin:2.5rem 0 1.8rem;color:var(--text-muted);font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em}
-.sec-divider::before,.sec-divider::after{content:'';flex:1;height:.5px;background:var(--border)}
+/* SWARA DETAIL */
+.swara-detail-view { display: none; padding: 0 1.5rem 3rem; max-width: 1100px; margin: 0 auto; }
+.swara-detail-view.active { display: block; }
+.sd-back { font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 1.5px; background: none; border: none; color: var(--cream3); cursor: pointer; padding: 12px 0 8px; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+.sd-back:hover { color: var(--gold); }
+.sd-header {
+  display: grid; grid-template-columns: auto 1fr; gap: 1.8rem; align-items: center;
+  padding: 2rem 0 1.8rem; border-bottom: 1px solid var(--border); margin-bottom: 1.8rem;
+}
+.sd-symbol { font-size: 4rem; line-height: 1; }
+.sd-tag { font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 2.5px; color: var(--cream3); margin-bottom: 5px; }
+.sd-title { font-family: 'Cinzel Decorative', serif; font-size: 1.8rem; font-weight: 700; color: var(--gold); margin-bottom: 2px; }
+.sd-sub { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.05rem; color: var(--cream3); margin-bottom: 10px; }
+.sd-pills { display: flex; gap: 5px; flex-wrap: wrap; }
+.sd-pill { font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 0.8px; border: 1px solid var(--border); border-radius: 2px; color: var(--cream3); padding: 2px 8px; }
+.active-key-bar {
+  background: var(--surface); border: 1px solid rgba(155,77,202,0.2); border-radius: 3px;
+  padding: 6px 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 0.78rem; flex-wrap: wrap;
+}
+.akb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+.akb-dot.ok { background: var(--green-ok); }
+.akb-text { color: var(--cream3); font-size: 0.75rem; flex: 1; }
+.akb-open {
+  font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 0.8px; background: none;
+  border: 1px solid var(--border); color: var(--cream3); cursor: pointer; padding: 3px 9px;
+  border-radius: 2px; transition: all 0.2s; white-space: nowrap;
+}
+.akb-open:hover { border-color: var(--violet); color: var(--violet2); }
+.page-tabs {
+  display: flex; gap: 0; overflow-x: auto; border-bottom: 1px solid var(--border);
+  margin-bottom: 1.8rem; scrollbar-width: none;
+}
+.page-tabs::-webkit-scrollbar { display: none; }
+.page-tab {
+  font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 1px; background: none; border: none;
+  border-bottom: 2px solid transparent; color: var(--cream3); cursor: pointer; padding: 8px 14px;
+  white-space: nowrap; transition: all 0.2s;
+}
+.page-tab:hover { color: var(--cream2); }
+.page-tab.active { color: var(--gold2); border-bottom-color: var(--gold); }
+.page-tab.p7 { color: var(--swara-ga); }
+.page-tab.p7.active { color: var(--swara-ga); border-bottom-color: var(--swara-ga); }
+.page-content { display: none; }
+.page-content.active { display: block; }
+.sec-divider {
+  display: flex; align-items: center; gap: 1rem; margin: 2.2rem 0 1.6rem;
+  color: var(--cream3); font-family: 'Cinzel', serif; font-size: 0.48rem; letter-spacing: 2px;
+}
+.sec-divider::before, .sec-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.octave-section { margin-bottom: 2rem; border: 1px solid var(--border); border-radius: 5px; overflow: hidden; }
+.oct-header {
+  background: var(--surface2); padding: 10px 1.2rem; display: flex; align-items: baseline;
+  gap: 1rem; border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.oct-label { font-family: 'Cinzel', serif; font-size: 0.48rem; letter-spacing: 2px; color: var(--cream3); }
+.oct-name { font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.5px; color: var(--gold); }
+.oct-hz { font-family: 'Cinzel', serif; font-size: 0.45rem; color: var(--cream3); margin-left: auto; }
+.oct-body { padding: 1.2rem; }
+.oct-desc { color: var(--cream3); font-size: 0.82rem; font-style: italic; margin-bottom: 1rem; }
+.gen-btn {
+  font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 1px; background: none;
+  border: 1px solid rgba(201,146,42,0.4); border-radius: 3px; color: var(--gold);
+  cursor: pointer; padding: 6px 14px; transition: all 0.2s; margin-bottom: 1rem;
+}
+.gen-btn:hover { background: rgba(201,146,42,0.1); border-color: var(--gold2); }
+.gen-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.para-block { margin-bottom: 1rem; line-height: 1.88; color: var(--cream2); }
+.para-block.loading {
+  background: var(--surface2); border-radius: 4px; padding: 1rem; color: var(--cream3);
+  font-style: italic; font-size: 0.85rem; text-align: center;
+  animation: pulse-loading 1.5s ease-in-out infinite;
+}
+@keyframes pulse-loading { 0%,100%{opacity:.6;} 50%{opacity:1;} }
+.para-num { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 1.5px; color: var(--cream3); margin-right: 6px; }
+.case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+.case-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 1rem; }
+.case-n { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 2px; color: var(--cream3); margin-bottom: 4px; }
+.case-t { font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 0.5px; color: var(--gold); margin-bottom: 5px; }
+.case-b { font-size: 0.82rem; color: var(--cream3); line-height: 1.7; }
+/* Duration & Alankara page */
+.dur-hero-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; }
+.dur-hero-title { font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 1px; color: var(--gold); margin-bottom: 6px; }
+.dur-hero-desc { font-size: 0.85rem; color: var(--cream3); line-height: 1.8; }
+.dur-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.dur-tab {
+  font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 1px; background: none;
+  border: 1px solid var(--border); border-radius: 16px; color: var(--cream3); cursor: pointer;
+  padding: 4px 14px; transition: all 0.2s; white-space: nowrap;
+}
+.dur-tab:hover { border-color: var(--gold); color: var(--gold); }
+.dur-tab.active { border-color: var(--gold2); color: var(--gold2); background: rgba(201,146,42,0.08); }
+.dur-section { display: none; }
+.dur-section.active { display: block; }
+.dur-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 1.5rem; overflow: hidden; }
+.dur-card-head {
+  background: var(--surface2); padding: 1rem 1.2rem; display: flex; align-items: center;
+  gap: 1rem; border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.dur-notation { font-family: 'Cinzel Decorative', serif; font-size: 1.4rem; letter-spacing: 0.05em; }
+.dur-name { font-family: 'Cinzel', serif; font-size: 0.85rem; letter-spacing: 0.5px; color: var(--gold); line-height: 1.2; }
+.dur-beats { font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 1.5px; color: var(--cream3); margin-left: auto; }
+.dur-body { padding: 1.2rem; }
+.dur-gen-btn {
+  font-family: 'Cinzel', serif; font-size: 0.5rem; letter-spacing: 1px; background: none;
+  border: 1px solid rgba(201,146,42,0.4); border-radius: 3px; color: var(--gold);
+  cursor: pointer; padding: 5px 12px; transition: all 0.2s; margin-bottom: 1rem;
+}
+.dur-gen-btn:hover { background: rgba(201,146,42,0.1); }
+.dur-gen-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.aln-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; margin-top: 1rem; }
+.aln-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 1rem; transition: border-color 0.2s; }
+.aln-card:hover { border-color: rgba(201,146,42,0.3); }
+.aln-n { font-family: 'Cinzel', serif; font-size: 0.42rem; letter-spacing: 2px; color: var(--cream3); margin-bottom: 3px; }
+.aln-name { font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 0.5px; color: var(--gold); margin-bottom: 3px; }
+.aln-skt { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.82rem; color: var(--cream3); margin-bottom: 3px; }
+.aln-nota { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--green-ok); margin-bottom: 5px; }
+.aln-body { font-size: 0.78rem; color: var(--cream3); line-height: 1.7; }
+.aln-gen-btn {
+  font-family: 'Cinzel', serif; font-size: 0.45rem; letter-spacing: 0.8px; background: none;
+  border: 1px solid var(--border); border-radius: 2px; color: var(--cream3); cursor: pointer;
+  padding: 3px 8px; margin-top: 6px; transition: all 0.2s;
+}
+.aln-gen-btn:hover { border-color: var(--gold); color: var(--gold); }
+.aln-gen-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* case study */
-.case-study-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1rem}
-.case-card{background:var(--surface2);border:.5px solid var(--border);border-radius:6px;padding:1.1rem}
-.case-num{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.2em;color:var(--text-muted);margin-bottom:.4rem}
-.case-title{font-family:'Cinzel',serif;font-size:.83rem;letter-spacing:.06em;color:var(--gold-dim);margin-bottom:.4rem}
-.case-body{font-size:.86rem;color:var(--text-dim);line-height:1.75}
+/* Swara color helpers */
+.c-sa{color:var(--swara-sa)} .c-ri{color:var(--swara-ri)} .c-ga{color:var(--swara-ga)}
+.c-ma{color:var(--swara-ma)} .c-pa{color:var(--swara-pa)} .c-da{color:var(--swara-da)} .c-ni{color:var(--swara-ni)}
+.bg-sa{background:var(--swara-sa)} .bg-ri{background:var(--swara-ri)} .bg-ga{background:var(--swara-ga)}
+.bg-ma{background:var(--swara-ma)} .bg-pa{background:var(--swara-pa)} .bg-da{background:var(--swara-da)} .bg-ni{background:var(--swara-ni)}
 
-/* ── DURATION / ALANKARA PAGE (Page 7) ── */
-.dur-hero{background:var(--surface);border:.5px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:2rem}
-.dur-hero-title{font-family:'Cinzel',serif;font-size:1rem;letter-spacing:.12em;color:var(--gold);margin-bottom:.5rem}
-.dur-hero-desc{font-size:.9rem;color:var(--text-dim);line-height:1.8}
-.dur-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.8rem}
-.dur-tab{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;background:none;border:.5px solid var(--border);border-radius:20px;color:var(--text-muted);cursor:pointer;padding:.3rem .9rem;transition:all .2s;white-space:nowrap}
-.dur-tab:hover{border-color:var(--gold-dim);color:var(--gold-dim)}
-.dur-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.08)}
-.dur-content{display:none}
-.dur-content.active{display:block}
-.dur-card{background:var(--surface);border:.5px solid var(--border);border-radius:8px;margin-bottom:2rem;overflow:hidden}
-.dur-card-head{background:var(--surface2);padding:1rem 1.4rem;display:flex;align-items:center;gap:1.2rem;border-bottom:.5px solid var(--border);flex-wrap:wrap}
-.dur-notation{font-family:'Cinzel',serif;font-size:1.6rem;letter-spacing:.05em}
-.dur-label-wrap{}
-.dur-name{font-family:'Cinzel',serif;font-size:.95rem;letter-spacing:.08em;color:var(--gold);line-height:1.2}
-.dur-desc{font-size:.8rem;color:var(--text-dim);font-style:italic}
-.dur-beats{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.15em;color:var(--text-muted);margin-left:auto}
-.dur-body{padding:1.4rem}
-.dur-gen-btn{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;background:none;border:.5px solid var(--gold-dim);border-radius:4px;color:var(--gold-dim);cursor:pointer;padding:.4rem 1rem;transition:all .2s;margin-bottom:1.1rem}
-.dur-gen-btn:hover{background:rgba(201,168,76,.08);color:var(--gold);border-color:var(--gold)}
-.dur-gen-btn:disabled{opacity:.4;cursor:not-allowed}
-.dur-result{}
-
-/* alankara section */
-.alankara-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1rem;margin-top:1rem}
-.aln-card{background:var(--surface2);border:.5px solid var(--border);border-radius:6px;padding:1.1rem;transition:border-color .2s}
-.aln-card:hover{border-color:var(--gold-dim)}
-.aln-num{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.2em;color:var(--text-muted);margin-bottom:.3rem}
-.aln-name{font-family:'Cinzel',serif;font-size:.9rem;letter-spacing:.08em;color:var(--gold-dim);margin-bottom:.3rem}
-.aln-sanskrit{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--text-dim);margin-bottom:.4rem}
-.aln-notation{font-family:monospace;font-size:.82rem;color:var(--swara-ga);margin-bottom:.4rem;letter-spacing:.05em}
-.aln-body{font-size:.84rem;color:var(--text-dim);line-height:1.72}
-.aln-gen-btn{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.08em;background:none;border:.5px solid var(--border);border-radius:3px;color:var(--text-muted);cursor:pointer;padding:.2rem .6rem;margin-top:.6rem;transition:all .2s}
-.aln-gen-btn:hover{border-color:var(--gold-dim);color:var(--gold-dim)}
-.aln-gen-btn:disabled{opacity:.4;cursor:not-allowed}
-
-/* swara colors */
-.c-sa{color:var(--swara-sa)}.c-ra{color:var(--swara-ra)}.c-ga{color:var(--swara-ga)}
-.c-ma{color:var(--swara-ma)}.c-pa{color:var(--swara-pa)}.c-da{color:var(--swara-da)}.c-ni{color:var(--swara-ni)}
-.bg-sa{background-color:var(--swara-sa)}.bg-ra{background-color:var(--swara-ra)}.bg-ga{background-color:var(--swara-ga)}
-.bg-ma{background-color:var(--swara-ma)}.bg-pa{background-color:var(--swara-pa)}.bg-da{background-color:var(--swara-da)}.bg-ni{background-color:var(--swara-ni)}
+/* EXPORT MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 600; display: flex; align-items: center; justify-content: center; }
+.modal { background: var(--bg2); border: 1px solid var(--border3); max-width: 720px; width: 95%; max-height: 80vh; display: flex; flex-direction: column; border-radius: 4px; }
+.modal-hdr { padding: 14px 18px; border-bottom: 1px solid var(--border3); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.modal-title { font-family: 'Cinzel Decorative', serif; font-size: 0.7rem; color: var(--gold2); }
+.modal-close { background: none; border: none; color: var(--cream3); font-size: 1.1rem; cursor: pointer; }
+.modal-body { flex: 1; overflow-y: auto; padding: 18px; }
+.modal-ta { width: 100%; min-height: 380px; background: rgba(0,0,0,0.4); border: 1px solid var(--border2); color: var(--cream2); font-family: 'Cormorant Garamond', serif; font-size: 0.85rem; line-height: 1.7; padding: 12px; resize: vertical; outline: none; border-radius: 3px; }
+.modal-footer { padding: 10px 18px; border-top: 1px solid var(--border3); display: flex; gap: 8px; justify-content: flex-end; flex-shrink: 0; }
+.modal-btn { font-family: 'Cinzel Decorative', serif; font-size: 0.48rem; letter-spacing: 1.5px; padding: 6px 14px; border: 1px solid var(--border3); background: rgba(201,146,42,0.07); color: var(--cream2); cursor: pointer; transition: all 0.2s; border-radius: 1px; }
+.modal-btn:hover { background: rgba(201,146,42,0.18); border-color: var(--gold); }
+.modal-btn.primary { background: rgba(201,146,42,0.2); border-color: rgba(201,146,42,0.55); color: var(--gold2); }
 
 @media(max-width:700px){
-  .swara-grid{grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin:0 .75rem 2rem}
-  .detail-header{grid-template-columns:1fr;gap:1rem}
-  .detail-symbol{font-size:3rem}
-  .detail-view{padding:0 .9rem 3rem}
-  nav{padding:0 .6rem}
-  .vault-grid{grid-template-columns:1fr}
+  .home-cards { grid-template-columns: 1fr; }
+  .swara-grid { grid-template-columns: repeat(auto-fit,minmax(130px,1fr)); margin: 0 .6rem 2rem; }
+  .sd-header { grid-template-columns: 1fr; gap: 1rem; }
+  .rudram-sidebar { width: 180px; }
+  .rudram-content { padding: 18px 16px 28px; }
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav id="main-nav">
-  <div class="nav-logo">SAPTA SWARAS<br>DEEP RESEARCH · II</div>
-  <button class="nav-swara-btn" onclick="showSwara(0)">SA</button>
-  <button class="nav-swara-btn" onclick="showSwara(1)">RA</button>
-  <button class="nav-swara-btn" onclick="showSwara(2)">GA</button>
-  <button class="nav-swara-btn" onclick="showSwara(3)">MA</button>
-  <button class="nav-swara-btn" onclick="showSwara(4)">PA</button>
-  <button class="nav-swara-btn" onclick="showSwara(5)">DA</button>
-  <button class="nav-swara-btn" onclick="showSwara(6)">NI</button>
+<!-- ══ TOP NAV ══ -->
+<nav class="top-nav">
+  <div class="nav-brand" style="cursor:pointer" onclick="showSection('home')">
+    <span class="nav-om">ॐ</span>
+    <div class="nav-brand-text">SACRED MUSIC<br>PORTAL</div>
+  </div>
+  <button class="nav-section-btn active" id="nav-home" onclick="showSection('home')">Home</button>
+  <button class="nav-section-btn" id="nav-rudram" onclick="showSection('rudram')">Sri Rudram</button>
+  <button class="nav-section-btn" id="nav-swaras" onclick="showSection('swaras')">Sapta Swaras</button>
   <div class="nav-right">
-    <button class="nav-btn" id="vault-nav-btn" onclick="openVault()">🔑 KEY VAULT</button>
-    <a href="https://www.culturalmusings.com" target="_blank" style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--text-muted);text-decoration:none;padding:.35rem .7rem;border:.5px solid var(--border);border-radius:4px;">← PART I</a>
+    <span id="navProviderLabel" style="font-family:'JetBrains Mono',monospace;font-size:0.45rem;color:var(--muted)"></span>
+    <button class="vault-btn" id="vaultNavBtn" onclick="openVault()">⚷ KEY VAULT</button>
   </div>
 </nav>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
 
-<!-- VAULT OVERLAY -->
-<div id="vault-overlay" onclick="vaultOverlayClick(event)">
-  <div class="vault-panel" id="vault-panel">
-    <div class="vault-title">🔑 API KEY VAULT</div>
-    <div class="vault-sub">Store up to 20 Anthropic API keys with custom names. Keys are saved permanently in your browser. Click "USE" to set the active key. Lock to prevent editing.</div>
-    <button class="vault-close" onclick="closeVault()">✕ CLOSE</button>
-    <div class="vault-master-row">
-      <div class="vault-status-dot" id="vault-status-dot"></div>
-      <div class="vault-master-label" id="vault-master-label">No key active</div>
-      <button class="vault-lock-btn" id="vault-lock-btn" onclick="toggleVaultLock()">🔓 LOCK VAULT</button>
+<!-- ══ VAULT OVERLAY ══ -->
+<div class="vault-overlay" id="vaultOverlay" onclick="vaultBgClick(event)">
+  <div class="vault-panel" id="vaultPanel">
+    <div class="vault-panel-title">⚷ API Key Vault</div>
+    <div class="vault-panel-sub">
+      Paste Groq (gsk_…), Gemini (AIzaSy…), or OpenRouter (sk-or…) keys — all free-tier or low-cost.<br>
+      Up to 20 slots. Keys saved in browser localStorage. Click <strong>USE</strong> to activate a slot.
     </div>
-    <div class="vault-grid" id="vault-grid"><!-- slots injected by JS --></div>
+    <button class="vault-close-btn" onclick="closeVault()">✕ CLOSE</button>
+    <div class="vault-info-row">
+      <div class="vault-dot" id="vaultDot"></div>
+      <div class="vault-info-label" id="vaultInfoLabel">No key active yet</div>
+    </div>
+    <div class="vault-slots-grid" id="vaultSlotsGrid"></div>
+    <div class="vault-footer-row">
+      <button class="vault-clear-btn" onclick="clearAllVaultKeys()">✕ Clear All Keys</button>
+      <div class="vault-provider-note">
+        Free providers: <strong style="color:var(--swara-ga)">Groq</strong> gsk_… · 
+        <strong style="color:var(--swara-pa)">Gemini</strong> AIzaSy… · 
+        <strong style="color:var(--swara-da)">OpenRouter</strong> sk-or…
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- HERO -->
-<section class="hero" id="hero-section">
-  <span class="hero-tag">CULTURALMUSINGS.COM · PART TWO · NAREDLA RAMA CHANDRA</span>
-  <h1>Sapta Swaras</h1>
-  <h2>The Seven Sacred Tones — A Complete Science</h2>
-  <p class="hero-desc">
-    Six pages of deep research per swara across all octave levels — plus a new Page 7 covering
-    swara durations (Sā · Sāā · Sāāā), ornamental Alankaras, and their effects from
-    philosophical, medical, scientific, yogic, and neurological viewpoints.
-    All content generated live via your stored API key.
-  </p>
-  <div class="octave-legend">
-    <div class="oct-pill"><span>𝄢</span> MANDRA — Low Octave</div>
-    <div class="oct-pill"><span>𝄞</span> MADHYA — Middle Octave</div>
-    <div class="oct-pill"><span>𝄡</span> TARA — High Octave</div>
-    <div class="oct-pill"><span>✦</span> DURATION — Sā Sāā Sāāā</div>
-    <div class="oct-pill"><span>◈</span> ALANKARA — Ornament System</div>
+<!-- ══ APP BODY ══ -->
+<div class="app-body">
+
+  <!-- HOME -->
+  <div class="section-view active" id="sec-home">
+    <div class="home-view">
+      <div class="home-content">
+        <span class="home-om">ॐ</span>
+        <h1 class="home-title">Sacred Music Portal</h1>
+        <p class="home-sub">Sri Rudram Commentary · Sapta Swaras Deep Research</p>
+        <div class="home-cards">
+          <div class="home-card rudram" onclick="showSection('rudram')">
+            <span class="hcard-icon">🕉</span>
+            <div class="hcard-title">Sri Rudram</div>
+            <div class="hcard-desc">A 40-page scholarly masterwork — Sanskrit analysis, Svara Sthāna science, Namakam & Chamakam commentary, neurological dimensions, and the path to liberation.</div>
+            <div class="hcard-stats">
+              <span class="hcard-stat">25 Sections</span>
+              <span class="hcard-stat">11+11 Anuvakas</span>
+              <span class="hcard-stat">~40 Pages</span>
+            </div>
+          </div>
+          <div class="home-card swaras" onclick="showSection('swaras')">
+            <span class="hcard-icon">🎵</span>
+            <div class="hcard-title">Sapta Swaras</div>
+            <div class="hcard-desc">Deep research across all seven sacred tones — 6 scholarly pages per swara covering Sanskrit, philosophy, medicine, vibration, acoustics, and case studies, plus durations & alankaras.</div>
+            <div class="hcard-stats">
+              <span class="hcard-stat">7 Swaras</span>
+              <span class="hcard-stat">7 Pages Each</span>
+              <span class="hcard-stat">3 Octaves</span>
+              <span class="hcard-stat">18 Alankaras</span>
+            </div>
+          </div>
+        </div>
+        <div class="home-vault-hint">
+          <strong>⚷ Setup:</strong> Click <strong>KEY VAULT</strong> (top right) → paste a free Groq, Gemini, or OpenRouter API key → click <strong>USE</strong>. Both tools will use it. No Anthropic key required.
+        </div>
+      </div>
+    </div>
+    <div class="log-strip">
+      <div class="log-dot info" id="logDot"></div>
+      <div class="log-text" id="logText">Welcome — add a free Groq, Gemini, or OpenRouter key in the vault to begin.</div>
+      <div class="log-time" id="logTime"></div>
+      <div class="log-provider" id="logProvider"></div>
+    </div>
   </div>
-  <p style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.15em;color:var(--gold-dim);margin-top:1rem;">
-    Click <span onclick="openVault()" style="cursor:pointer;text-decoration:underline;color:var(--gold)">🔑 KEY VAULT</span> to store your Anthropic API key once — it will be remembered permanently.
-  </p>
-</section>
 
-<!-- SWARA GRID -->
-<div class="swara-grid" id="swara-grid"></div>
+  <!-- RUDRAM -->
+  <div class="section-view" id="sec-rudram">
+    <div class="rudram-layout">
+      <div class="rudram-sidebar" id="rudramSidebar"></div>
+      <div class="rudram-main">
+        <div class="rudram-toolbar">
+          <button class="r-btn primary" id="rGenAllBtn" onclick="rGenerateAll()" disabled>⚡ Generate All 25</button>
+          <button class="r-btn" id="rGenOneBtn" onclick="rGenerateCurrent()" disabled>▶ This Section</button>
+          <button class="r-btn" onclick="rExport()">⇩ Export</button>
+          <span class="r-progress-label" id="rProgressLabel"></span>
+        </div>
+        <div class="rudram-content" id="rudramContent"></div>
+      </div>
+    </div>
+    <div class="log-strip">
+      <div class="log-dot info" id="logDot2"></div>
+      <div class="log-text" id="logText2">Sri Rudram — select a section and generate.</div>
+      <div class="log-time" id="logTime2"></div>
+      <div class="log-provider" id="logProvider2"></div>
+    </div>
+  </div>
 
-<!-- DETAIL CONTAINER -->
-<div id="detail-container"></div>
+  <!-- SWARAS -->
+  <div class="section-view" id="sec-swaras">
+    <div class="swaras-view">
+      <div class="swaras-nav-bar" id="swarasNavBar">
+        <button class="swara-nav-btn active" id="swnav-grid" onclick="showSwaraGrid()">◉ All Swaras</button>
+      </div>
+      <div class="swaras-content-area" id="swarasContentArea">
+        <!-- hero + grid injected by JS -->
+      </div>
+    </div>
+    <div class="log-strip">
+      <div class="log-dot info" id="logDot3"></div>
+      <div class="log-text" id="logText3">Sapta Swaras — select a swara to explore.</div>
+      <div class="log-time" id="logTime3"></div>
+      <div class="log-provider" id="logProvider3"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay" id="exportModal" style="display:none">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-title">⇩ Export Sri Rudram Commentary</span>
+      <button class="modal-close" onclick="document.getElementById('exportModal').style.display='none'">✕</button>
+    </div>
+    <div class="modal-body"><textarea class="modal-ta" id="exportContent" readonly></textarea></div>
+    <div class="modal-footer">
+      <button class="modal-btn" onclick="rCopyExport()">Copy</button>
+      <button class="modal-btn primary" onclick="rDownloadExport()">Download .md</button>
+      <button class="modal-btn" onclick="document.getElementById('exportModal').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
 
 <script>
+'use strict';
 // ═══════════════════════════════════════════════════════════════
-// DATA
+//  SHARED: VAULT + API ENGINE
 // ═══════════════════════════════════════════════════════════════
-const SWARAS = [
-  { id:'sa', num:'01', devanagari:'स', name:'Sa', fullname:'Shadja', color:'sa',
-    etymology:'Ṣaḍjaḥ — "born of six"', animal:'Peacock · Mayūra', deity:'Agni · Fire',
-    chakra:'Mūlādhāra · Root', rasa:'Vīra · Heroic', ayur:'Vāta',
-    freq:{mandra:130.81,madhya:261.63,tara:523.25},
-    durBase:'Sā', durMid:'Sāā', durLong:'Sāāā',
-    bija:'LAṂ', pages:['Sanskrit','Philosophy','Medicine','Vibration','Acoustics','Case Studies','Duration & Alankara'] },
-  { id:'ra', num:'02', devanagari:'रे', name:'Ra / Re', fullname:'Rishabha', color:'ra',
-    etymology:'Ṛṣabhaḥ — "the bull, the eminent"', animal:'Skylark · Chataka', deity:'Brahma · Creation',
-    chakra:'Svādhiṣṭhāna · Sacral', rasa:'Karuṇa · Compassion', ayur:'Pitta–Vāta',
-    freq:{mandra:146.83,madhya:293.66,tara:587.33},
-    durBase:'Rā', durMid:'Rāā', durLong:'Rāāā',
-    bija:'VAṂ', pages:['Sanskrit','Philosophy','Medicine','Vibration','Acoustics','Case Studies','Duration & Alankara'] },
-  { id:'ga', num:'03', devanagari:'ग', name:'Ga', fullname:'Gandhara', color:'ga',
-    etymology:'Gāndhāraḥ — "fragrance-bearing, celestial"', animal:'Goat · Aja', deity:'Sarasvatī · Wisdom',
-    chakra:'Maṇipūra · Solar Plexus', rasa:'Śānta · Tranquil', ayur:'Kapha',
-    freq:{mandra:164.81,madhya:329.63,tara:659.26},
-    durBase:'Gā', durMid:'Gāā', durLong:'Gāāāā',
-    bija:'RAṂ', pages:['Sanskrit','Philosophy','Medicine','Vibration','Acoustics','Case Studies','Duration & Alankara'] },
-  { id:'ma', num:'04', devanagari:'म', name:'Ma', fullname:'Madhyama', color:'ma',
-    etymology:'Madhyamaḥ — "the middle one, mediator"', animal:'Dove · Kapota', deity:'Viṣṇu · Sustainer',
-    chakra:'Anāhata · Heart', rasa:'Śṛṅgāra · Love', ayur:'Pitta',
-    freq:{mandra:174.61,madhya:349.23,tara:698.46},
-    durBase:'Māā', durMid:'Māāā', durLong:'Māāāā',
-    bija:'YAṂ', pages:['Sanskrit','Philosophy','Medicine','Vibration','Acoustics','Case Studies','Duration & Alankara'] },
-  { id:'pa', num:'05', devanagari:'प', name:'Pa', fullname:'Panchama', color:'pa',
-    etymology:'Pañcamaḥ — "the fifth, the perfect fifth"', animal:'Koel · Kokila', deity:'Indra · Sky-King',
-    chakra:'Viśuddha · Throat', rasa:'Adbhuta · Wonder', ayur:'Kapha–Vāta',
-    freq:{mandra:196.00,madhya:392.00,tara:784.00},
-    durBase:'Pāā', durMid:'Pāāā', durLong:'Pāāāā',
-    bija:'HAṂ', pages:['Sanskrit','Philosophy','Medicine','Vibration','Acoustics','Case Studies','Duration & Alankara'] },
-  { id:'da', num:'06', devanagari:'ध', name:'Da / Dha', fullname:'Dhaivata', color:'da',
-    etymology:'Dhaivataḥ — "the gifted one, pure sustenance"', animal:'Horse · Aśva', deity:'Gaṇeśa · Remover of Obstacles',
-    chakra:'Ājñā · Third Eye', rasa:'Bhayānaka · Awe', ayur:'Vāta–Pitta',
-    freq:{mandra:220.00,madhya:440.00,tara:880.00},
-    durBase:'Dhāā', durMid:'Dhāāā', durLong:'Dhāāāā',
-    bija:'OM', pages:['Sanskrit','Philosophy','Medicine','Vibration','Acoustics','Case Studies','Duration & Alankara'] },
-  { id:'ni', num:'07', devanagari:'नि', name:'Ni', fullname:'Nishada', color:'ni',
-    etymology:'Niṣādaḥ — "the seated one, dweller of the forest"', animal:'Elephant · Gaja', deity:'Śiva · Transcendence',
-    chakra:'Sahasrāra · Crown', rasa:'Raudra · Fierce', ayur:'Kapha',
-    freq:{mandra:246.94,madhya:493.88,tara:987.77},
-    durBase:'Nī', durMid:'Nīī', durLong:'Nīīī',
-    bija:'AUṂ', pages:['Sanskrit','Philosophy','Medicine','Vibration','Acoustics','Case Studies','Duration & Alankara'] }
-];
+const MAX_SLOTS = 20;
+let activeSlotIdx = -1;
+let activeApiKey  = '';
+let totalApiCalls = 0;
 
-const OCTAVES = [
-  {id:'mandra',label:'MANDRA OCTAVE',name:'Low / Mandra Saptaka',desc:'The low octave — dwelling in the earth, body, and primal resonance'},
-  {id:'madhya',label:'MADHYA OCTAVE',name:'Middle / Madhya Saptaka',desc:'The natural octave — the heart of human vocal and instrumental expression'},
-  {id:'tara',label:'TARA OCTAVE',name:'High / Tara Saptaka',desc:'The high octave — transcendent, ethereal, approaching silence and light'}
-];
-
-const PAGE_KEYS = ['sanskrit','philosophy','medicine','vibration','acoustics','casestudies','duration'];
-
-// Duration variants per swara
-function getDurations(s) {
-  return [
-    { id:'d1', label: s.durBase,      beats:'1 mātrā — Short',  desc:'The single-beat form. Crisp, decisive, seed-syllable quality. Used in taan and fast passages.' },
-    { id:'d2', label: s.durMid,       beats:'2 mātrā — Medium', desc:'The double-beat sustained form. Foundational to ālāp and slow vilambit compositions.' },
-    { id:'d3', label: s.durLong,      beats:'3+ mātrā — Long',  desc:'The prolonged, resonant form. Used in gamaka, meend, and dhrupad ālāp for maximum resonance and healing effect.' }
-  ];
+function vaultLoad() {
+  try { const r = localStorage.getItem('smp_vault_v1'); if(r) return JSON.parse(r); } catch(e){}
+  return Array.from({length:MAX_SLOTS}, ()=>({name:'',key:''}));
 }
-
-// Alankara system — 18 classical ornaments
-function getAlankaras(s) {
-  const n = s.name;
-  return [
-    { id:'palta1', name:'Palta — Ascending', skt:'Āroha Palta', notation:`${n}·R·G·M·P·D·N·Ṡ`, body:`The ascending palta is the foundational exercise of Indian classical music, training the voice and instrument to move through all seven swaras in a linear upward motion. It establishes intervallic accuracy, tonal purity, and breath-to-bow discipline simultaneously.` },
-    { id:'palta2', name:'Palta — Descending', skt:'Avaroha Palta', notation:`Ṡ·N·D·P·M·G·R·${n}`, body:`The descending palta develops gravity and resolution, the natural fall of sound toward the root swara. It trains the musician's ear for cadential awareness and the art of landing with emotional weight on the final note.` },
-    { id:'palta3', name:'Palta — Zigzag', skt:'Vakra Palta', notation:`${n}·G·R·M·G·P·M·D`, body:`Vakra paltas introduce non-linear movement, skipping swaras in serpentine patterns. They mirror the irregular, organic melodic curves of complex ragas and develop cognitive flexibility in navigating the swara-space.` },
-    { id:'gamaka', name:'Gamaka — Oscillation', skt:'Gamaka', notation:`${n}~~${n}~~${n}`, body:`Gamaka is the trembling, oscillating embellishment that is the soul of Karnatak music and central to dhrupad in Hindustani. It involves rapid, deliberate oscillation around the principal swara, producing a shimmering, emotionally charged tone that cannot be notated fully, only felt and imitated.` },
-    { id:'meend', name:'Meend — Glide', skt:'Meend / Mīnḍ', notation:`${n}───▶M (glide)`, body:`Meend is the continuous glide between two non-adjacent swaras, producing a liquid, vocalistic quality that imitates speech's natural portamento. On the sitar and sarod it is executed by pulling the string laterally; on voice it requires fine breath control and relaxed laryngeal tension.` },
-    { id:'kan', name:'Kan — Grace Note', skt:'Kan Svara', notation:`(G)${n}`, body:`Kan is the fleeting grace note preceding the principal swara — a ghost of an adjacent note that gives the arrival note weight, colour, and directional intention. It is the musical equivalent of a glance before eye contact, building anticipation and imparting raga-specific character.` },
-    { id:'sparsha', name:'Sparsha — Touch', skt:'Sparśa Svara', notation:`${n}(touch)M`, body:`Sparsha literally means "touch." A swara is briefly touched in passing without full emphasis, contributing texture and melodic memory without asserting itself as a resting note. It reveals the raga's personality in the in-between spaces.` },
-    { id:'andolan', name:'Andolan — Sway', skt:'Āndolana', notation:`${n}≈≈≈`, body:`Andolan is a slow, pendulum-like oscillation around a central swara, wider and more deliberate than gamaka, with a meditative, hypnotic quality. It is characteristic of ragas like Darbari Kanada and induces a deep contemplative state in the listener through rhythmic entrainment.` },
-    { id:'murki', name:'Murki — Rapid Turn', skt:'Murkī', notation:`${n}GR${n}GR${n}`, body:`Murki is a rapid ornamental figure of three or four notes executed in a single rhythmic pulse, creating a dazzling ornamental flourish. It is the signature of khyal gayaki and top tabla-accompanied compositions, showcasing both technical mastery and spontaneous creativity.` },
-    { id:'khatka', name:'Khatka — Snap', skt:'Khaṭkā', notation:`${n}!M!G!${n}`, body:`Khatka involves a quick, snapping movement across two or three swaras in a percussive, emphatic manner. Unlike the smooth meend, the khatka is angular and incisive, used for rhythmic accent and to break the melodic surface with a flash of energy.` },
-    { id:'gitkari', name:'Gitkari — Trill', skt:'Gītkārī', notation:`${n}M${n}M${n}M${n}`, body:`Gitkari is a rapid trill between adjacent swaras, creating a sparkling, high-velocity ornament that demonstrates control and agility. It is closely related to the European trill but shaped by the microtonal world of Indian tuning and the specific swara relationships within a raga.` },
-    { id:'jaru', name:'Jaru — Scrape', skt:'Jārū', notation:`▄▄▄▶${n}`, body:`Jaru is a strong, scraping glide that arrives at the target swara from a distance below, creating a sense of raw power and earthiness. It is especially prevalent in dhrupad and dhamar, where its dramatic sweep reinforces the masculine, heroic quality of the music.` },
-    { id:'bol-alankara', name:'Bol-Alankara — Syllabic', skt:'Bol Ālaṃkāra', notation:`Da-Di-Da | ${n}-R-${n}`, body:`Bol-alankara integrates tabla bols (syllables) with swara patterns, creating a fusion of rhythmic and melodic ornamentation that is unique to Hindustani music. The voice or instrument mimics the percussive articulation of the tabla, blurring the line between tone and rhythm.` },
-    { id:'taan-alankara', name:'Taan-Alankara — Speed Run', skt:'Tāna Ālaṃkāra', notation:`${n}RGMPDNṠ (fast)`, body:`Taan-alankaras are high-speed melodic runs that display velocity, stamina, and precision. They are the climactic expression of a raga's emotional content, the release after the slow meditation of the ālāp, sweeping through octaves with elemental force.` },
-    { id:'shruti-gamaka', name:'Shruti Gamaka — Microtonal', skt:'Śruti Gamaka', notation:`${n}(22-shruti field)`, body:`Shruti gamaka operates in the microtonal field of the 22 shrutis, the ancient Indian division of the octave into 22 unequal intervals. The ornament explores the subtle inflections between standard swaras, revealing the emotional depth hidden within the cracks of Western equal temperament.` },
-    { id:'sphuritha', name:'Sphuritha — Pulsation', skt:'Sphūritha', notation:`${n}·${n}·${n} (pulse)`, body:`Sphuritha involves striking the swara multiple times in rapid succession with equal weight, creating a pulsating effect that is both rhythmic and tonal. It activates specific neural oscillation patterns and is used in Nada Yoga to resonate particular chakras through sustained tonal repetition.` },
-    { id:'kampita', name:'Kampita — Tremolo', skt:'Kampita', notation:`${n}(vib)~~~`, body:`Kampita is a classical Karnatak term for a controlled vibrato — a regular, periodic oscillation in pitch centered on the swara. Its rate and depth are precisely calibrated in different ragas, making it one of the most raga-specific ornaments, carrying the emotional fingerprint of the tradition.` },
-    { id:'nokku', name:'Nokku — Stress', skt:'Nokku', notation:`>${n}<`, body:`Nokku is the art of swara stress — giving a note sudden dynamic emphasis, like a spoken exclamation. It communicates urgency, surprise, or emotional peak, and is one of the subtler alankaras that separates accomplished musicians from technically proficient but emotionally flat performers.` }
-  ];
+function vaultSave(slots) {
+  try { localStorage.setItem('smp_vault_v1', JSON.stringify(slots)); } catch(e){}
 }
-
-// Prompts for duration variants
-function durPrompt(s, durLabel, durDesc) {
-  return `Write exactly 8 to 9 paragraphs, each of exactly 6 lines, on the swara ${s.name} (${s.fullname}) held in the duration "${durLabel}" (${durDesc}). Cover all of these dimensions in order, one or two paragraphs each: (1) PHILOSOPHICAL — what does sustaining this swara for this duration mean in Nada Brahman philosophy, Vedanta, and Kashmir Shaivism; (2) MEDICAL & AYURVEDIC — the dosha (${s.ayur}), organ systems, pulse (nadi) effects and clinical therapeutic protocols for this specific duration; (3) SCIENTIFIC & ACOUSTIC — wave physics, standing wave formation, and cymatic pattern unique to this duration at ${s.freq.madhya.toFixed(2)} Hz; (4) YOGIC — breathwork, pranayama integration, and how this duration maps to specific kumbhaka ratios; (5) NEUROLOGICAL — brainwave entrainment (delta/theta/alpha/gamma), EEG patterns, and neuroscientific evidence for healing at this duration. Write in deep scholarly prose. No bullet points. Each paragraph exactly 6 lines.`;
+function vaultMetaLoad() {
+  try { const r = localStorage.getItem('smp_vault_meta_v1'); if(r){ const m=JSON.parse(r); activeSlotIdx=m.idx!=null?m.idx:-1; } } catch(e){}
 }
-
-function alankPrompt(s, aln) {
-  return `Write exactly 6 paragraphs of 6 lines each on the alankara "${aln.name}" (Sanskrit: ${aln.skt}) as applied to the swara ${s.name} (${s.fullname}). Cover: (1) historical lineage — which ancient treatise (Natyashastra, Sangita Ratnakara, Sangita Parijata, Brihaddesi) first codified this ornament and how it evolved; (2) technical execution — precise instructions for voice, vina, and sitar/sarod; (3) raga application — which ragas use this ornament in association with ${s.name} and why; (4) philosophical meaning — what consciousness state or rasa this ornament evokes when applied to ${s.name}; (5) neurological and medical effect — the specific brain and body response to this ornamental pattern; (6) genealogy — how this alankara branches into sub-types and related ornaments across traditions (Hindustani, Karnatak, Dhrupad). No bullets. Deep scholarly prose. Each paragraph exactly 6 lines.`;
+function vaultMetaSave() {
+  try { localStorage.setItem('smp_vault_meta_v1', JSON.stringify({idx:activeSlotIdx})); } catch(e){}
 }
-
-// ═══════════════════════════════════════════════════════════════
-// KEY VAULT
-// ═══════════════════════════════════════════════════════════════
-const MAX_KEYS = 20;
-let vaultLocked = false;
-let activeKeyIdx = -1; // index of the currently active key slot
-let activeApiKey = '';
-
-function loadVaultFromStorage() {
-  try {
-    const raw = localStorage.getItem('sapta_vault_v1');
-    if (raw) return JSON.parse(raw);
-  } catch(e){}
-  return Array.from({length: MAX_KEYS}, (_,i) => ({ name:'', key:'', active: false }));
-}
-
-function saveVaultToStorage(slots) {
-  try { localStorage.setItem('sapta_vault_v1', JSON.stringify(slots)); } catch(e){}
-}
-
-function loadVaultMeta() {
-  try {
-    const raw = localStorage.getItem('sapta_vault_meta_v1');
-    if (raw) {
-      const m = JSON.parse(raw);
-      vaultLocked  = m.locked  || false;
-      activeKeyIdx = m.activeIdx !== undefined ? m.activeIdx : -1;
-    }
-  } catch(e){}
-}
-
-function saveVaultMeta() {
-  try { localStorage.setItem('sapta_vault_meta_v1', JSON.stringify({locked: vaultLocked, activeIdx: activeKeyIdx})); } catch(e){}
-}
-
 function buildVaultUI() {
-  const slots = loadVaultFromStorage();
-  const grid  = document.getElementById('vault-grid');
+  const slots = vaultLoad();
+  const grid  = document.getElementById('vaultSlotsGrid');
   grid.innerHTML = '';
-  slots.forEach((slot, idx) => {
-    const isActive = idx === activeKeyIdx;
-    const hasKey   = slot.key && slot.key.startsWith('sk-');
-    const div = document.createElement('div');
-    div.className = `vault-slot${hasKey?' has-key':''}${isActive?' active-key':''}`;
-    div.id = `vault-slot-${idx}`;
-    div.innerHTML = `
-      <div class="slot-top">
-        <span class="slot-num">${String(idx+1).padStart(2,'0')}</span>
-        <input class="slot-name-input" id="slot-name-${idx}" type="text" placeholder="Key name…" value="${escHtml(slot.name)}" maxlength="30" ${vaultLocked?'readonly':''} oninput="slotNameChange(${idx},this.value)">
-        <button class="slot-use-btn${isActive?' in-use':''}" id="slot-use-${idx}" onclick="setActiveKey(${idx})">${isActive?'✓ IN USE':'USE'}</button>
+  slots.forEach((slot,i)=>{
+    const isActive = i===activeSlotIdx;
+    const hasKey   = !!slot.key;
+    const d = document.createElement('div');
+    d.className = `vault-slot${hasKey?' has-key':''}${isActive?' is-active':''}`;
+    d.id = `vs-${i}`;
+    d.innerHTML = `
+      <div class="vslot-top">
+        <span class="vslot-num">${String(i+1).padStart(2,'0')}</span>
+        <input class="vslot-name" id="vsn-${i}" type="text" placeholder="Label…" maxlength="28" value="${escH(slot.name)}" oninput="vsNameChange(${i},this.value)"/>
+        <button class="vslot-use${isActive?' in-use':''}" id="vsu-${i}" onclick="vsActivate(${i})">${isActive?'✓ ACTIVE':'USE'}</button>
       </div>
-      <div class="slot-key-wrap">
-        <input class="slot-key-input" id="slot-key-${idx}" type="password" placeholder="sk-ant-api03…" value="${escHtml(slot.key)}" ${vaultLocked?'readonly':''} oninput="slotKeyChange(${idx},this.value)">
-        <button class="slot-toggle-btn" onclick="toggleSlotVisibility(${idx})">👁</button>
+      <div class="vslot-key-row">
+        <input class="vslot-key-inp" id="vsk-${i}" type="password" placeholder="gsk_… / AIzaSy… / sk-or…" value="${escH(slot.key)}" oninput="vsKeyChange(${i},this.value)"/>
+        <button class="vslot-eye" onclick="vsToggleEye(${i})">👁</button>
       </div>
-      <div class="slot-indicator${hasKey?(isActive?' active':' ok'):''}" id="slot-ind-${idx}">
-        ${isActive?'● ACTIVE KEY':(hasKey?'● Key stored':'○ Empty')}
+      <div class="vslot-ind${hasKey?(isActive?' active':' ok'):''}" id="vsi-${i}">
+        ${isActive?'● ACTIVE':(hasKey?'● Stored':'○ Empty')}
       </div>`;
-    grid.appendChild(div);
+    grid.appendChild(d);
   });
-  updateVaultMasterUI();
+  updateVaultInfoRow();
+  updateAllKeyBars();
+  updateVaultNavBtn();
+}
+function escH(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function vsNameChange(i,v){ const s=vaultLoad(); s[i].name=v; vaultSave(s); }
+function vsKeyChange(i,v){ const s=vaultLoad(); s[i].key=v.trim(); vaultSave(s); refreshVaultSlot(i,v.trim()); if(i===activeSlotIdx){activeApiKey=v.trim();updateVaultNavBtn();} }
+function vsToggleEye(i){ const inp=document.getElementById(`vsk-${i}`); inp.type=inp.type==='password'?'text':'password'; }
+function refreshVaultSlot(i,key){
+  const isActive=i===activeSlotIdx, hasKey=!!key;
+  const d=document.getElementById(`vs-${i}`); if(d) d.className=`vault-slot${hasKey?' has-key':''}${isActive?' is-active':''}`;
+  const ind=document.getElementById(`vsi-${i}`); if(ind){ ind.className=`vslot-ind${hasKey?(isActive?' active':' ok'):''}`;ind.textContent=isActive?'● ACTIVE':(hasKey?'● Stored':'○ Empty'); }
+}
+function vsActivate(i){
+  const slots=vaultLoad(); const key=(slots[i]?.key||'').trim();
+  if(!key){alert('Slot empty — paste a key first.');return;}
+  activeSlotIdx=i; activeApiKey=key; vaultMetaSave();
+  buildVaultUI(); updateRudramBtns();
+  log('ok',`Slot ${i+1} activated — key ready.`);
+}
+function updateVaultInfoRow(){
+  const dot=document.getElementById('vaultDot'); const lbl=document.getElementById('vaultInfoLabel');
+  if(activeApiKey){ dot.className='vault-dot ok'; const s=vaultLoad(); const nm=s[activeSlotIdx]?.name||`Slot ${activeSlotIdx+1}`; lbl.textContent=`Active: ${nm} · ${detectProvider(activeApiKey)} · …${activeApiKey.slice(-6)}`; }
+  else { dot.className='vault-dot'; lbl.textContent='No key active — click USE on a slot below'; }
+}
+function updateVaultNavBtn(){
+  const btn=document.getElementById('vaultNavBtn');
+  if(activeApiKey){ btn.classList.add('key-active'); btn.textContent='⚷ KEY: ACTIVE'; }
+  else { btn.classList.remove('key-active'); btn.textContent='⚷ KEY VAULT'; }
+}
+function updateAllKeyBars(){
+  document.querySelectorAll('.akb-dot').forEach(d=>{ d.className=activeApiKey?'akb-dot ok':'akb-dot'; });
+  document.querySelectorAll('.akb-text').forEach(el=>{
+    const s=vaultLoad(); const nm=s[activeSlotIdx]?.name||(activeSlotIdx>=0?`Slot ${activeSlotIdx+1}`:'');
+    el.textContent=activeApiKey?`Active: ${nm} (${detectProvider(activeApiKey)} · …${activeApiKey.slice(-6)}) — ready`:'No active key — click ⚷ KEY VAULT to set one';
+  });
+  updateRudramBtns();
+}
+function clearAllVaultKeys(){
+  if(!confirm('Clear all 20 keys?'))return;
+  const empty=Array.from({length:MAX_SLOTS},()=>({name:'',key:''}));
+  vaultSave(empty); activeSlotIdx=-1; activeApiKey=''; vaultMetaSave();
+  buildVaultUI(); updateRudramBtns(); log('info','All keys cleared.');
+}
+function openVault(){ buildVaultUI(); document.getElementById('vaultOverlay').classList.add('open'); }
+function closeVault(){ document.getElementById('vaultOverlay').classList.remove('open'); }
+function vaultBgClick(e){ if(e.target===document.getElementById('vaultOverlay'))closeVault(); }
+
+function detectProvider(key){
+  if(!key)return'—';
+  if(key.startsWith('gsk_')||key.startsWith('gsk-'))return'Groq';
+  if(key.startsWith('AIzaSy')||key.startsWith('AIza'))return'Gemini';
+  if(key.startsWith('sk-or'))return'OpenRouter';
+  return'Unknown';
 }
 
-function escHtml(s) {
-  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// ── UNIFIED API CALL ──
+async function callAI(prompt, maxTokens=2000){
+  if(!activeApiKey) throw new Error('No API key. Open Key Vault and activate a slot.');
+  const provider=detectProvider(activeApiKey);
+  let result;
+  try{
+    if(provider==='Groq')         result=await callGroq(activeApiKey,prompt,maxTokens);
+    else if(provider==='Gemini')  result=await callGemini(activeApiKey,prompt,maxTokens);
+    else if(provider==='OpenRouter') result=await callOpenRouter(activeApiKey,prompt,maxTokens);
+    else {
+      try{ result=await callGroq(activeApiKey,prompt,maxTokens); }
+      catch(e){ result=await callOpenRouter(activeApiKey,prompt,maxTokens); }
+    }
+  } catch(err){ throw err; }
+  totalApiCalls++;
+  const prov=detectProvider(activeApiKey);
+  document.querySelectorAll('.log-provider,[id^=logProvider]').forEach(el=>el.textContent=prov);
+  document.getElementById('navProviderLabel').textContent=`${prov}·${totalApiCalls} calls`;
+  return result;
 }
 
-function slotNameChange(idx, val) {
-  const slots = loadVaultFromStorage();
-  slots[idx].name = val;
-  saveVaultToStorage(slots);
+async function callGroq(key,prompt,maxTokens){
+  const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+    body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:Math.min(maxTokens,8000),messages:[{role:'user',content:prompt}]})
+  });
+  if(!r.ok){const t=await r.text();throw new Error(`Groq ${r.status}: ${t.slice(0,200)}`);}
+  const d=await r.json(); return d.choices?.[0]?.message?.content||'';
+}
+async function callGemini(key,prompt,maxTokens){
+  const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:Math.min(maxTokens,8192)}})
+  });
+  if(!r.ok)throw new Error(`Gemini ${r.status}`);
+  const d=await r.json(); return d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+}
+async function callOpenRouter(key,prompt,maxTokens){
+  const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`,'HTTP-Referer':'https://sacredmusic.study','X-Title':'Sacred Music Portal'},
+    body:JSON.stringify({model:'meta-llama/llama-3.3-70b-instruct:free',max_tokens:Math.min(maxTokens,8000),messages:[{role:'user',content:prompt}]})
+  });
+  if(!r.ok)throw new Error(`OpenRouter ${r.status}`);
+  const d=await r.json(); return d.choices?.[0]?.message?.content||'';
 }
 
-function slotKeyChange(idx, val) {
-  const slots = loadVaultFromStorage();
-  slots[idx].key = val.trim();
-  saveVaultToStorage(slots);
-  const hasKey = val.trim().startsWith('sk-');
-  const isActive = idx === activeKeyIdx;
-  document.getElementById(`vault-slot-${idx}`).className = `vault-slot${hasKey?' has-key':''}${isActive?' active-key':''}`;
-  document.getElementById(`slot-ind-${idx}`).textContent = isActive?'● ACTIVE KEY':(hasKey?'● Key stored':'○ Empty');
-  if (isActive) { activeApiKey = val.trim(); updateActiveKeyBars(); }
+// ── LOGGING ──
+function log(type, msg, target){
+  const dots =[['logDot','logText','logTime'],['logDot2','logText2','logTime2'],['logDot3','logText3','logTime3']];
+  const targets = target!=null?[dots[target]]:dots;
+  const n=new Date(); const ts=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
+  targets.forEach(([d,t,ti])=>{
+    const dd=document.getElementById(d); const tt=document.getElementById(t); const ttt=document.getElementById(ti);
+    if(dd)dd.className=`log-dot ${type==='ai'?'ai':type}`;
+    if(tt)tt.textContent=msg;
+    if(ttt)ttt.textContent=ts;
+  });
 }
 
-function toggleSlotVisibility(idx) {
-  const inp = document.getElementById(`slot-key-${idx}`);
-  inp.type = inp.type === 'password' ? 'text' : 'password';
+// ── SECTION SWITCHER ──
+function showSection(sec){
+  ['home','rudram','swaras'].forEach(s=>{
+    document.getElementById(`sec-${s}`).classList.toggle('active',s===sec);
+    document.getElementById(`nav-${s}`).classList.toggle('active',s===sec);
+  });
+  if(sec==='rudram') renderRudramCurrent();
 }
 
-function setActiveKey(idx) {
-  const slots = loadVaultFromStorage();
-  const key = slots[idx]?.key?.trim() || '';
-  if (!key) { alert('This slot has no API key stored yet.'); return; }
-  activeKeyIdx = idx;
-  activeApiKey = key;
-  saveVaultMeta();
-  buildVaultUI(); // refresh
-  updateActiveKeyBars();
-  // visual flash on nav btn
-  const btn = document.getElementById('vault-nav-btn');
-  btn.textContent = '✓ KEY ACTIVE';
-  btn.style.borderColor = 'var(--swara-ga)';
-  btn.style.color = 'var(--swara-ga)';
-  setTimeout(() => { btn.textContent = '🔑 KEY VAULT'; btn.style.borderColor=''; btn.style.color=''; }, 2000);
+// ═══════════════════════════════════════════════════════════════
+//  SRI RUDRAM
+// ═══════════════════════════════════════════════════════════════
+const R_SECTIONS=[
+  {id:'intro',group:'Prologue',title:'Sri Rudram — The Ocean of Mantras',subtitle:'Origin · Structure · Sacred Science · Purpose',pt:'intro'},
+  {id:'n1',group:'Namakam',anuvaka:1,title:'Anuvaka 1',subtitle:'namas te rudra manavastoṣe…',pt:'anuvaka',part:'Namakam'},
+  {id:'n2',group:'Namakam',anuvaka:2,title:'Anuvaka 2',subtitle:'namas te astu bhagavaṃs…',pt:'anuvaka',part:'Namakam'},
+  {id:'n3',group:'Namakam',anuvaka:3,title:'Anuvaka 3',subtitle:'namo girīśāya ca śipiviṣṭāya…',pt:'anuvaka',part:'Namakam'},
+  {id:'n4',group:'Namakam',anuvaka:4,title:'Anuvaka 4',subtitle:'namo vṛkṣebhyo harikēśebhyaḥ…',pt:'anuvaka',part:'Namakam'},
+  {id:'n5',group:'Namakam',anuvaka:5,title:'Anuvaka 5',subtitle:'namas tīrthyāya ca kulyāya…',pt:'anuvaka',part:'Namakam'},
+  {id:'n6',group:'Namakam',anuvaka:6,title:'Anuvaka 6',subtitle:'namaḥ sabhābhyaś ca…',pt:'anuvaka',part:'Namakam'},
+  {id:'n7',group:'Namakam',anuvaka:7,title:'Anuvaka 7',subtitle:'namaḥ sopāsadbhyaś ca…',pt:'anuvaka',part:'Namakam'},
+  {id:'n8',group:'Namakam',anuvaka:8,title:'Anuvaka 8',subtitle:'namaḥ śarabheḍhyaś ca…',pt:'anuvaka',part:'Namakam'},
+  {id:'n9',group:'Namakam',anuvaka:9,title:'Anuvaka 9',subtitle:'nama āyacchabhyaś ca…',pt:'anuvaka',part:'Namakam'},
+  {id:'n10',group:'Namakam',anuvaka:10,title:'Anuvaka 10',subtitle:'namo bhavāya ca rudrāya…',pt:'anuvaka',part:'Namakam'},
+  {id:'n11',group:'Namakam',anuvaka:11,title:'Anuvaka 11 — Mahāmṛtyuñjaya',subtitle:'tryambakāya sugandhim puṣṭi-vardhanam…',pt:'anuvaka',part:'Namakam'},
+  {id:'c1',group:'Chamakam',anuvaka:1,title:'Anuvaka 1',subtitle:'agniś ca ma indrāś ca me…',pt:'anuvaka',part:'Chamakam'},
+  {id:'c2',group:'Chamakam',anuvaka:2,title:'Anuvaka 2',subtitle:'śam ca me mayaś ca me…',pt:'anuvaka',part:'Chamakam'},
+  {id:'c3',group:'Chamakam',anuvaka:3,title:'Anuvaka 3',subtitle:'śukraś ca me śucīś ca me…',pt:'anuvaka',part:'Chamakam'},
+  {id:'c4',group:'Chamakam',anuvaka:4,title:'Anuvaka 4',subtitle:'vṛddhiś ca me…',pt:'anuvaka',part:'Chamakam'},
+  {id:'c5',group:'Chamakam',anuvaka:5,title:'Anuvaka 5',subtitle:'pañca ca me daśa ca me…',pt:'anuvaka',part:'Chamakam'},
+  {id:'c6',group:'Chamakam',anuvaka:6,title:'Anuvaka 6',subtitle:'ekā ca me tisraś ca me…',pt:'anuvaka',part:'Chamakam'},
+  {id:'c7',group:'Chamakam',anuvaka:7,title:'Anuvaka 7',subtitle:'śataś ca me sahasraś ca me…',pt:'anuvaka',part:'Chamakam'},
+  {id:'c8',group:'Chamakam',anuvaka:8,title:'Anuvaka 8',subtitle:'iṣṭaṃ ca me pṛktaṃ ca me…',pt:'anuvaka',part:'Chamakam'},
+  {id:'c9',group:'Chamakam',anuvaka:9,title:'Anuvaka 9',subtitle:'sūktaṃ ca me sukṛtaṃ ca me…',pt:'anuvaka',part:'Chamakam'},
+  {id:'c10',group:'Chamakam',anuvaka:10,title:'Anuvaka 10',subtitle:'paśuś ca me paśupatīś ca me…',pt:'anuvaka',part:'Chamakam'},
+  {id:'c11',group:'Chamakam',anuvaka:11,title:'Anuvaka 11',subtitle:'śaṃ no mitras śaṃ varuṇaḥ…',pt:'anuvaka',part:'Chamakam'},
+  {id:'swara',group:'Sacred Science',title:'Svara Sthāna — Tonal Architecture',subtitle:'Pitch · Articulation · Neural Resonance · Physics of Mantra',pt:'swara'},
+  {id:'synthesis',group:'Sacred Science',title:'The Perfect Persona',subtitle:'Sri Rudram as a Complete System for Human Integration',pt:'synthesis'}
+];
+
+const rSectionData={};
+R_SECTIONS.forEach(s=>{rSectionData[s.id]={status:'idle',content:''};});
+let rCurrentSection=R_SECTIONS[0].id;
+let rIsGeneratingAll=false, rStopGen=false;
+
+function updateRudramBtns(){
+  const active=!!activeApiKey;
+  document.getElementById('rGenAllBtn').disabled=!active;
+  document.getElementById('rGenOneBtn').disabled=!active;
 }
 
-function updateVaultMasterUI() {
-  const dot   = document.getElementById('vault-status-dot');
-  const label = document.getElementById('vault-master-label');
-  const lockBtn = document.getElementById('vault-lock-btn');
-  if (activeApiKey && activeApiKey.startsWith('sk-')) {
-    dot.className = 'vault-status-dot ok';
-    const slots = loadVaultFromStorage();
-    const name = slots[activeKeyIdx]?.name || `Key ${activeKeyIdx+1}`;
-    label.textContent = `Active: ${name} (sk-…${activeApiKey.slice(-6)})`;
-  } else {
-    dot.className = 'vault-status-dot empty';
-    label.textContent = 'No active key — click USE on a slot below';
+function buildRudramPrompt(sec){
+  if(sec.pt==='intro') return `You are a master scholar of Vedic literature, Sanskrit linguistics, neuroscience, and Advaita-Shaiva philosophy. Write a comprehensive 1800-word introduction to Sri Rudram. Cover: Origin in Krishna Yajurveda (TS 4.5 & 4.7), Rishi Vasishtha, Chhandas, why called Heart of the Vedas, Sanskrit alphabet as sacred cosmology (50 aksharas and chakra petals), Vedic Svara system (udatta/anudatta/svarita), neurological dimensions (gamma waves, cortisol, vagal stimulation), Rudra as Transformation (ghora and shiva aspects, Pashupati), and the path from practice to near-perfection (viveka, vairagya, satsampat). Format with bold headings. Use Sanskrit in IAST with meanings in parentheses.`;
+  if(sec.pt==='swara') return `You are a master of Vedic phonetics and neuroscience. Write a 1600-word scholarly essay titled "Svara Sthāna: The Tonal Architecture of Sri Rudram." Cover: (1) Three Vedic svaras — Udatta, Anudatta, Svarita — with acoustic and philosophical meanings; (2) Five articulatory sthanas — Kantha, Talu, Murdha, Danta, Ostha — with vagal pathways and chakra correspondences; (3) Svara patterns in 4 specific Sri Rudram mantras; (4) Neural mapping — how svara sequences modulate the autonomic nervous system; (5) Svara Sadhana — guru-shishya learning and stages of mastery. Use IAST. Format with bold headings.`;
+  if(sec.pt==='synthesis') return `You are simultaneously a Vedantic acharya, neuroscientist, depth psychologist, and poet. Write a profound 1900-word culminating essay titled "The Perfect Persona: Sri Rudram as a Complete System for Human Integration & Liberation." Cover: (1) Five Koshas; (2) Shadow Integration — the 108 names of Rudra as map of the psyche; (3) Chamakam Progression — 11 anuvakas as psychological developmental ladder; (4) Scientific Convergence — DMN quieting, hemispheric integration; (5) The Near-Perfect Persona — qualities in relationships, under stress, with death; (6) Daily Sadhana prescription; (7) Closing vision. Be profound and precise.`;
+  const{part,anuvaka}=sec;
+  return `You are a supreme authority on Vedic literature, Sanskrit grammar, Shaiva philosophy, and neuroscience. Write a comprehensive 1500-word commentary on Sri Rudram ${part} Anuvaka ${anuvaka}.\n\nStructure:\n## A. SANSKRIT TEXT\nProvide Sanskrit text in Devanagari and IAST transliteration.\n## B. WORD-BY-WORD ANALYSIS\nAnalyze 8-12 key terms: grammar, etymology, primary meaning, esoteric meaning, aspect of Rudra invoked.\n## C. SVARA ANALYSIS\nIdentify udatta/anudatta/svarita patterns in 3-4 key words. Explain tonal arc and physiological effect.\n## D. PHILOSOPHICAL COMMENTARY\nCover Shaiva Siddhanta, Kashmir Shaivism, and Advaita Vedanta. ${part==='Chamakam'?'Explain what blessings are requested and why.':'Explain what form of Rudra is saluted and the psychological significance.'}\n## E. NEUROLOGICAL DIMENSIONS\nNeural networks activated, physiological effects, psychological pattern this anuvaka dissolves.\n## F. METAPHYSICAL SIGNIFICANCE\nFundamental truth revealed, macrocosmic and microcosmic dimensions.\n## G. THE SADHAKA'S LEARNING\nQuality to absorb, practical contemplation, behavioral shift.\n\nUse IAST transliteration. Be precise and illuminating.`;
+}
+
+function rRenderMarkdown(text){
+  if(!text)return'';
+  let html=text
+    .replace(/^#### (.+)$/gm,'<h4>$1</h4>').replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^---+$/gm,'<hr/>').replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>').replace(/^\d+\. (.+)$/gm,'<li>$1</li>')
+    .split(/\n{2,}/).map(b=>{
+      if(b.match(/^<(h[1-4]|blockquote|hr|li)/))return b;
+      if(!b.trim())return'';
+      return`<p>${b.replace(/\n/g,'<br/>')}</p>`;
+    }).join('\n');
+  html=html.replace(/(<li>[\s\S]*?<\/li>\n?)+/g,m=>`<ul>${m}</ul>`);
+  return html;
+}
+
+function buildRudramSidebar(){
+  const sb=document.getElementById('rudramSidebar');
+  const groups=[...new Set(R_SECTIONS.map(s=>s.group))];
+  let html='';
+  groups.forEach(g=>{
+    const items=R_SECTIONS.filter(s=>s.group===g);
+    html+=`<div class="rsb-group"><div class="rsb-group-title">${g}</div>`;
+    items.forEach(s=>{
+      const d=rSectionData[s.id];
+      html+=`<div class="rsb-item${rCurrentSection===s.id?' active':''}" id="rsb-${s.id}" onclick="rSelectSection('${s.id}')">
+        <div class="rsb-dot${d.status==='done'?' done':d.status==='generating'?' generating':d.status==='error'?' error':''}" id="rsbd-${s.id}"></div>
+        <div><div class="rsb-label">${s.title}</div>${s.anuvaka?`<div class="rsb-anuvaka">AN·${s.anuvaka}</div>`:''}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  sb.innerHTML=html;
+}
+
+function rUpdateSidebarDot(id){
+  const d=rSectionData[id]; const dot=document.getElementById(`rsbd-${id}`);
+  if(dot)dot.className=`rsb-dot${d.status==='done'?' done':d.status==='generating'?' generating':d.status==='error'?' error':''}`;
+}
+
+function rSelectSection(id){
+  const old=document.getElementById('rsb-'+rCurrentSection); if(old)old.classList.remove('active');
+  rCurrentSection=id;
+  const neu=document.getElementById('rsb-'+id); if(neu)neu.classList.add('active');
+  renderRudramCurrent();
+}
+
+function renderRudramCurrent(){ renderRudramSection(rCurrentSection); }
+
+function renderRudramSection(id){
+  const sec=R_SECTIONS.find(s=>s.id===id); const d=rSectionData[id];
+  const area=document.getElementById('rudramContent');
+  const hdr=`<div class="r-sec-header"><div class="r-eyebrow">${sec.group}</div><div class="r-sec-title">${sec.title}</div>${sec.subtitle?`<div class="r-sec-sub">${sec.subtitle}</div>`:''}</div>`;
+  if(d.status==='idle'){
+    const done=Object.values(rSectionData).filter(x=>x.status==='done').length;
+    if(id===R_SECTIONS[0].id && done===0){
+      area.innerHTML=`<div class="r-welcome"><span class="r-welcome-om">ॐ</span><h2>Sri Rudram Commentary</h2><p>A 40-page scholarly masterwork covering Sanskrit analysis, Svara Sthāna science, philosophical depth, neurological dimensions, and the path to liberation.</p><div class="r-verse"><em>namas te rudra manavastoṣe</em><br/><strong>Salutations to Rudra, the knower of minds</strong></div><div class="r-stats"><div class="r-stat"><span class="r-stat-num">25</span><span class="r-stat-lbl">Sections</span></div><div class="r-stat"><span class="r-stat-num">11+11</span><span class="r-stat-lbl">Anuvakas</span></div><div class="r-stat"><span class="r-stat-num">~40</span><span class="r-stat-lbl">Pages</span></div></div><p style="color:var(--cream3);font-size:0.85rem">Add a Groq, Gemini, or OpenRouter key in the vault, then click <strong>Generate All</strong> or <strong>This Section</strong>.</p></div>`;
+      return;
+    }
+    area.innerHTML=hdr+`<div class="r-empty"><span class="r-big-icon">🕉</span><p>Not yet generated.</p><p>Click <strong>▶ This Section</strong> or <strong>⚡ Generate All 25</strong>.</p></div>`;
+    return;
   }
-  lockBtn.textContent = vaultLocked ? '🔒 LOCKED' : '🔓 LOCK VAULT';
-  lockBtn.className   = 'vault-lock-btn' + (vaultLocked ? ' locked' : '');
-}
-
-function toggleVaultLock() {
-  vaultLocked = !vaultLocked;
-  saveVaultMeta();
-  buildVaultUI();
-}
-
-function openVault() {
-  buildVaultUI();
-  document.getElementById('vault-overlay').classList.add('open');
-}
-
-function closeVault() {
-  document.getElementById('vault-overlay').classList.remove('open');
-}
-
-function vaultOverlayClick(e) {
-  if (e.target === document.getElementById('vault-overlay')) closeVault();
-}
-
-function updateActiveKeyBars() {
-  document.querySelectorAll('.akey-dot').forEach(d => {
-    d.className = activeApiKey.startsWith('sk-') ? 'akey-dot' : 'akey-dot empty';
-  });
-  document.querySelectorAll('.akey-text').forEach(el => {
-    const slots = loadVaultFromStorage();
-    const name  = slots[activeKeyIdx]?.name || (activeKeyIdx>=0?`Key ${activeKeyIdx+1}`:'');
-    el.textContent = activeApiKey.startsWith('sk-')
-      ? `Active key: ${name} (sk-…${activeApiKey.slice(-6)}) — ready to generate`
-      : 'No active API key — click 🔑 KEY VAULT to set one';
-  });
-}
-
-// ═══════════════════════════════════════════════════════════════
-// BUILD GRID
-// ═══════════════════════════════════════════════════════════════
-function buildGrid() {
-  document.getElementById('swara-grid').innerHTML = SWARAS.map((s,i) => `
-    <div class="swara-card" id="card-${s.id}" onclick="showSwara(${i})">
-      <div class="swara-accent bg-${s.color}"></div>
-      <div class="swara-num">${s.num} / 07</div>
-      <div class="swara-devanagari c-${s.color}">${s.devanagari}</div>
-      <div class="swara-name">${s.name}</div>
-      <div class="swara-fullname">${s.fullname}</div>
-      <div class="freq-bar-wrap">
-        <div class="freq-label">MANDRA · MADHYA · TARA</div>
-        <div class="freq-row"><div class="freq-bar"><div class="freq-fill bg-${s.color}" style="width:${(s.freq.mandra/s.freq.tara*100).toFixed(0)}%"></div></div><div class="freq-hz">${s.freq.mandra.toFixed(1)} Hz</div></div>
-      </div>
-      <div class="swara-hz">Madhya <span>${s.freq.madhya.toFixed(2)} Hz</span></div>
-      <div style="margin-top:.5rem;font-family:'Cinzel',serif;font-size:8px;letter-spacing:.08em;color:var(--text-muted)">${s.etymology}</div>
-      <div style="margin-top:.4rem;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--gold-dim)">${s.durBase} · ${s.durMid} · ${s.durLong}</div>
-    </div>`).join('');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// BUILD DETAILS
-// ═══════════════════════════════════════════════════════════════
-const generatedContent = {};
-
-// Standard page topics (pages 1–5)
-const STD_PAGES = {
-  sanskrit: {
-    title:'Sanskrit, Etymology & Linguistic Roots',
-    prompt:(s,oc)=>`Write 8 paragraphs of exactly 6 lines each on the Sanskrit etymology of ${s.name} (${s.fullname}) in its ${oc.name} manifestation at ${s.freq[oc.id].toFixed(2)} Hz. Cover its Vedic root, Paninian derivation, Rigvedic appearances, Bharata Muni's definition, Samaveda notation, compound words, grammatical gender, and Upanishadic connotations. No bullets. Scholarly prose.`
-  },
-  philosophy: {
-    title:'Philosophy, Vedanta & Consciousness',
-    prompt:(s,oc)=>`Write 8 paragraphs of exactly 6 lines each on the Vedantic and philosophical significance of ${s.name} (${s.fullname}) in the ${oc.name} at ${s.freq[oc.id].toFixed(2)} Hz. Cover Nada Brahman cosmology, Advaita Vedanta, Kashmir Shaivism's spanda, Yoga philosophy, the ${s.chakra} chakra, Katha Upanishad's eschatology, Ramana Maharshi's teachings, and the Mandra-Madhya-Tara trinity as philosophical metaphor. No bullets. Deep scholarly prose.`
-  },
-  medicine: {
-    title:'Ayurvedic Medicine & Therapeutic Application',
-    prompt:(s,oc)=>`Write 8 paragraphs of exactly 6 lines each on the Ayurvedic and modern medical significance of ${s.name} (${s.fullname}) at ${s.freq[oc.id].toFixed(2)} Hz in the ${oc.name}. Cover dosha ${s.ayur}, organ systems, Charaka Samhita, Raga Chikitsa, neuroscience of auditory entrainment, autonomic nervous system effects, psychosomatic applications, and clinical protocols. No bullets. Scholarly prose.`
-  },
-  vibration: {
-    title:'Science of Vibrations & Cymatics',
-    prompt:(s,oc)=>`Write 8 paragraphs of exactly 6 lines each on the vibrational physics of ${s.name} (${s.fullname}) at ${s.freq[oc.id].toFixed(2)} Hz. Cover wave mechanics, Chladni cymatic patterns, Schumann resonance, molecular resonance, soliton theory, Pythagorean ratios, standing waves, and quantum vacuum interactions. Scientific depth, no bullets.`
-  },
-  acoustics: {
-    title:'Acoustics, Sound Science & Instrumentation',
-    prompt:(s,oc)=>`Write 8 paragraphs of exactly 6 lines each on the acoustic science of ${s.name} (${s.fullname}) at ${s.freq[oc.id].toFixed(2)} Hz in the ${oc.name}. Cover room acoustics, vina/sitar string physics, ancient instrument design, psychoacoustics, temple resonance, digital signal processing, tanpura drone physics, and acoustic therapy chambers. No bullets.`
+  if(d.status==='generating'){
+    const mantras=['ॐ नमः शिवाय','नमस्ते रुद्र मन्यव','त्र्यम्बकं यजामहे','अग्निश्च म इन्द्रश्च मे'];
+    area.innerHTML=hdr+`<div class="r-loading"><div class="r-spinner"></div><p>Channeling sacred knowledge via ${detectProvider(activeApiKey)}…</p><div class="r-loading-mantra">${mantras[Math.floor(Math.random()*4)]}</div></div>`;
+    return;
   }
+  area.innerHTML=hdr+`<div class="r-gen-content">${rRenderMarkdown(d.content)}</div>`;
+  area.scrollTop=0;
+}
+
+async function rGenerateSection(id){
+  const sec=R_SECTIONS.find(s=>s.id===id); if(!sec)return;
+  rSectionData[id].status='generating';
+  rUpdateSidebarDot(id); if(rCurrentSection===id)renderRudramSection(id);
+  log('ai',`Generating: ${sec.title}…`,1);
+  try{
+    const content=await callAI(buildRudramPrompt(sec),2000);
+    rSectionData[id].content=content; rSectionData[id].status='done';
+    log('ok',`✓ ${sec.title}`,1);
+  }catch(err){
+    rSectionData[id].status='error'; rSectionData[id].content=`**Error:** ${err.message}\n\nCheck your API key and try again.`;
+    log('err',`✗ ${sec.title}: ${err.message}`,1);
+  }
+  rUpdateSidebarDot(id); rUpdateProgress();
+  if(rCurrentSection===id)renderRudramSection(id);
+}
+
+async function rGenerateAll(){
+  if(rIsGeneratingAll){rStopGen=true;document.getElementById('rGenAllBtn').textContent='⚡ Generate All 25';rIsGeneratingAll=false;return;}
+  rIsGeneratingAll=true;rStopGen=false;
+  document.getElementById('rGenAllBtn').textContent='⏹ Stop';
+  const todo=R_SECTIONS.filter(s=>rSectionData[s.id].status!=='done');
+  for(const s of todo){if(rStopGen)break;await rGenerateSection(s.id);await new Promise(r=>setTimeout(r,700));}
+  rIsGeneratingAll=false;rStopGen=false;
+  document.getElementById('rGenAllBtn').textContent='⚡ Generate All 25';
+  log('ok','All sections generated!',1);
+}
+
+async function rGenerateCurrent(){ await rGenerateSection(rCurrentSection); }
+
+function rUpdateProgress(){
+  const done=Object.values(rSectionData).filter(d=>d.status==='done').length;
+  const pct=Math.round(done/R_SECTIONS.length*100);
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('rProgressLabel').textContent=`${done}/${R_SECTIONS.length}`;
+}
+
+function rExport(){
+  let md=`# SRI RUDRAM — A COMPLETE SACRED COMMENTARY\n## Sanskrit · Svara Sthāna · Philosophy · Neuroscience\n\n---\n\n`;
+  R_SECTIONS.forEach(s=>{const d=rSectionData[s.id];if(d.status==='done'&&d.content)md+=`\n\n# ${s.title.toUpperCase()}\n${s.subtitle?`*${s.subtitle}*\n\n`:''}${d.content}\n\n---\n`;});
+  document.getElementById('exportContent').value=md;
+  document.getElementById('exportModal').style.display='flex';
+}
+function rCopyExport(){ const ta=document.getElementById('exportContent');ta.select();document.execCommand('copy');log('ok','Copied!',1); }
+function rDownloadExport(){
+  const b=new Blob([document.getElementById('exportContent').value],{type:'text/markdown'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='sri-rudram-commentary.md';a.click();
+  log('ok','Downloaded!',1);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SAPTA SWARAS
+// ═══════════════════════════════════════════════════════════════
+const SWARAS=[
+  {id:'sa',num:'01',deva:'स',name:'Sa',full:'Shadja',color:'sa',etym:'Ṣaḍjaḥ — "born of six"',animal:'Peacock · Mayūra',deity:'Agni · Fire',chakra:'Mūlādhāra · Root',rasa:'Vīra · Heroic',ayur:'Vāta',freq:{mandra:130.81,madhya:261.63,tara:523.25},dur:['Sā','Sāā','Sāā​ā'],bija:'LAṂ'},
+  {id:'ri',num:'02',deva:'रे',name:'Ri / Re',full:'Rishabha',color:'ri',etym:'Ṛṣabhaḥ — "the bull, the eminent"',animal:'Skylark · Chataka',deity:'Brahma · Creation',chakra:'Svādhiṣṭhāna · Sacral',rasa:'Karuṇa · Compassion',ayur:'Pitta–Vāta',freq:{mandra:146.83,madhya:293.66,tara:587.33},dur:['Rā','Rāā','Rāā​ā'],bija:'VAṂ'},
+  {id:'ga',num:'03',deva:'ग',name:'Ga',full:'Gandhara',color:'ga',etym:'Gāndhāraḥ — "fragrance-bearing, celestial"',animal:'Goat · Aja',deity:'Sarasvatī · Wisdom',chakra:'Maṇipūra · Solar Plexus',rasa:'Śānta · Tranquil',ayur:'Kapha',freq:{mandra:164.81,madhya:329.63,tara:659.26},dur:['Gā','Gāā','Gāā​ā'],bija:'RAṂ'},
+  {id:'ma',num:'04',deva:'म',name:'Ma',full:'Madhyama',color:'ma',etym:'Madhyamaḥ — "the middle one, mediator"',animal:'Dove · Kapota',deity:'Viṣṇu · Sustainer',chakra:'Anāhata · Heart',rasa:'Śṛṅgāra · Love',ayur:'Pitta',freq:{mandra:174.61,madhya:349.23,tara:698.46},dur:['Māā','Māāā','Māā​āā'],bija:'YAṂ'},
+  {id:'pa',num:'05',deva:'प',name:'Pa',full:'Panchama',color:'pa',etym:'Pañcamaḥ — "the fifth, the perfect fifth"',animal:'Koel · Kokila',deity:'Indra · Sky-King',chakra:'Viśuddha · Throat',rasa:'Adbhuta · Wonder',ayur:'Kapha–Vāta',freq:{mandra:196.00,madhya:392.00,tara:784.00},dur:['Pāā','Pāāā','Pāā​āā'],bija:'HAṂ'},
+  {id:'da',num:'06',deva:'ध',name:'Da / Dha',full:'Dhaivata',color:'da',etym:'Dhaivataḥ — "the gifted one, pure sustenance"',animal:'Horse · Aśva',deity:'Gaṇeśa · Remover',chakra:'Ājñā · Third Eye',rasa:'Bhayānaka · Awe',ayur:'Vāta–Pitta',freq:{mandra:220.00,madhya:440.00,tara:880.00},dur:['Dhāā','Dhāā​ā','Dhāā​āā'],bija:'OM'},
+  {id:'ni',num:'07',deva:'नि',name:'Ni',full:'Nishada',color:'ni',etym:'Niṣādaḥ — "the seated one, dweller of the forest"',animal:'Elephant · Gaja',deity:'Śiva · Transcendence',chakra:'Sahasrāra · Crown',rasa:'Raudra · Fierce',ayur:'Kapha',freq:{mandra:246.94,madhya:493.88,tara:987.77},dur:['Nī','Nīī','Nīī​ī'],bija:'AUṂ'}
+];
+
+const OCTAVES=[
+  {id:'mandra',label:'MANDRA OCTAVE',name:'Low / Mandra Saptaka',desc:'The low octave — dwelling in the earth, body, and primal resonance.'},
+  {id:'madhya',label:'MADHYA OCTAVE',name:'Middle / Madhya Saptaka',desc:'The natural octave — the heart of human vocal and instrumental expression.'},
+  {id:'tara',label:'TARA OCTAVE',name:'High / Tara Saptaka',desc:'The high octave — transcendent, ethereal, approaching silence and light.'}
+];
+
+const S_PAGE_KEYS=['sanskrit','philosophy','medicine','vibration','acoustics','casestudies','duration'];
+const S_PAGE_TITLES=['Sanskrit & Etymology','Philosophy & Vedanta','Ayurvedic Medicine','Vibration Science','Acoustics & Sound','Case Studies','Duration & Alankara'];
+
+const STD_PROMPTS={
+  sanskrit:(s,oc)=>`Write 8 paragraphs of exactly 6 lines each on the Sanskrit etymology of ${s.name} (${s.full}) in its ${oc.name} manifestation at ${s.freq[oc.id].toFixed(2)} Hz. Cover its Vedic root, Paninian derivation, Rigvedic appearances, Bharata Muni's definition, Samaveda notation, compound words, grammatical gender, and Upanishadic connotations. No bullets. Scholarly prose.`,
+  philosophy:(s,oc)=>`Write 8 paragraphs of exactly 6 lines each on the Vedantic and philosophical significance of ${s.name} (${s.full}) in the ${oc.name} at ${s.freq[oc.id].toFixed(2)} Hz. Cover Nada Brahman cosmology, Advaita Vedanta, Kashmir Shaivism's spanda, Yoga philosophy, the ${s.chakra} chakra, Katha Upanishad, Ramana Maharshi's teachings, and the Mandra-Madhya-Tara trinity as philosophical metaphor. No bullets. Scholarly prose.`,
+  medicine:(s,oc)=>`Write 8 paragraphs of exactly 6 lines each on the Ayurvedic and medical significance of ${s.name} (${s.full}) at ${s.freq[oc.id].toFixed(2)} Hz in the ${oc.name}. Cover dosha ${s.ayur}, organ systems, Charaka Samhita, Raga Chikitsa, neuroscience of auditory entrainment, autonomic effects, psychosomatic applications, and clinical protocols. No bullets. Scholarly prose.`,
+  vibration:(s,oc)=>`Write 8 paragraphs of exactly 6 lines each on the vibrational physics of ${s.name} (${s.full}) at ${s.freq[oc.id].toFixed(2)} Hz. Cover wave mechanics, Chladni cymatic patterns, Schumann resonance, molecular resonance, soliton theory, Pythagorean ratios, standing waves, and quantum vacuum interactions. Scientific depth, no bullets.`,
+  acoustics:(s,oc)=>`Write 8 paragraphs of exactly 6 lines each on the acoustic science of ${s.name} (${s.full}) at ${s.freq[oc.id].toFixed(2)} Hz in the ${oc.name}. Cover room acoustics, vina/sitar string physics, ancient instrument design, psychoacoustics, temple resonance, digital signal processing, tanpura drone physics, and acoustic therapy. No bullets.`
 };
 
-function buildDetails() {
-  document.getElementById('detail-container').innerHTML = SWARAS.map((s,si) => `
-    <div class="detail-view" id="detail-${s.id}">
-      <button class="back-btn" onclick="closeDetail()">← Back to all swaras</button>
-      <div class="detail-header">
-        <div class="detail-symbol c-${s.color}">${s.devanagari}</div>
-        <div class="detail-meta">
-          <div class="detail-tag">SWARA ${s.num} OF 07 · SAPTA SWARAS · DEEP RESEARCH PART II</div>
-          <div class="detail-title">${s.name} — ${s.fullname}</div>
-          <div class="detail-subtitle">${s.etymology}</div>
-          <div class="detail-pills">
-            <div class="detail-pill">Chakra: ${s.chakra}</div>
-            <div class="detail-pill">Dosha: ${s.ayur}</div>
-            <div class="detail-pill">Rasa: ${s.rasa}</div>
-            <div class="detail-pill">Animal: ${s.animal}</div>
-            <div class="detail-pill">Deity: ${s.deity}</div>
-            <div class="detail-pill">Bīja: ${s.bija}</div>
-            <div class="detail-pill">Madhya: ${s.freq.madhya.toFixed(2)} Hz</div>
-            <div class="detail-pill">Durations: ${s.durBase} · ${s.durMid} · ${s.durLong}</div>
-          </div>
+const sGenCache={};
+let sSwaraDetailActive=null;
+
+function buildSwarasSection(){
+  const area=document.getElementById('swarasContentArea');
+  // Build hero + grid + detail views
+  let html=`
+    <div id="swaraGridView">
+      <div class="swara-hero">
+        <span class="sh-tag">SACRED MUSIC PORTAL · SAPTA SWARAS · DEEP RESEARCH</span>
+        <h1 class="sh-h1">Sapta Swaras</h1>
+        <h2 class="sh-h2">The Seven Sacred Tones — A Complete Science</h2>
+        <p class="sh-desc">Six pages of deep research per swara across all octave levels — Sanskrit, philosophy, medicine, vibration, acoustics, case studies — plus a Page 7 covering durations and 18 classical alankaras. All content generated via your stored API key.</p>
+      </div>
+      <div class="swara-grid">
+        ${SWARAS.map((s,i)=>`
+          <div class="swara-card" onclick="showSwara(${i})">
+            <div class="sc-accent bg-${s.color}"></div>
+            <div class="sc-num">${s.num} / 07</div>
+            <div class="sc-deva c-${s.color}">${s.deva}</div>
+            <div class="sc-name">${s.name}</div>
+            <div class="sc-full">${s.full}</div>
+            <div class="sc-hz">Madhya <span>${s.freq.madhya.toFixed(2)} Hz</span></div>
+            <div class="sc-dur">${s.dur[0]} · ${s.dur[1]} · ${s.dur[2]}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  // Detail views
+  SWARAS.forEach((s,si)=>{
+    html+=buildSwaraDetail(s,si);
+  });
+  area.innerHTML=html;
+}
+
+function buildSwaraDetail(s,si){
+  return `
+  <div class="swara-detail-view" id="sdetail-${s.id}">
+    <button class="sd-back" onclick="showSwaraGrid()">← All Swaras</button>
+    <div class="sd-header">
+      <div class="sd-symbol c-${s.color}">${s.deva}</div>
+      <div>
+        <div class="sd-tag">SWARA ${s.num} OF 07 · SAPTA SWARAS</div>
+        <div class="sd-title">${s.name} — ${s.full}</div>
+        <div class="sd-sub">${s.etym}</div>
+        <div class="sd-pills">
+          <span class="sd-pill">Chakra: ${s.chakra}</span>
+          <span class="sd-pill">Dosha: ${s.ayur}</span>
+          <span class="sd-pill">Rasa: ${s.rasa}</span>
+          <span class="sd-pill">Animal: ${s.animal}</span>
+          <span class="sd-pill">Deity: ${s.deity}</span>
+          <span class="sd-pill">Bīja: ${s.bija}</span>
+          <span class="sd-pill">Madhya: ${s.freq.madhya.toFixed(2)} Hz</span>
         </div>
       </div>
-      <div class="active-key-bar">
-        <div class="akey-dot empty"></div>
-        <div class="akey-text">No active API key — click 🔑 KEY VAULT to set one</div>
-        <button class="akey-open" onclick="openVault()">🔑 KEY VAULT</button>
-      </div>
-      <div class="page-tabs" id="tabs-${s.id}">
-        ${s.pages.map((p,pi)=>`<button class="page-tab${pi===6?' new-tab':''}${pi===0?' active':''}" onclick="showPage('${s.id}',${pi})" id="tab-${s.id}-${pi}">P${pi+1}: ${p.toUpperCase()}</button>`).join('')}
-      </div>
-      ${buildAllPages(s,si)}
-    </div>`).join('');
+    </div>
+    <div class="active-key-bar">
+      <div class="akb-dot${activeApiKey?' ok':''}"></div>
+      <div class="akb-text">${activeApiKey?`Active key (${detectProvider(activeApiKey)} · …${activeApiKey.slice(-6)}) — ready`:'No active key — click ⚷ KEY VAULT'}</div>
+      <button class="akb-open" onclick="openVault()">⚷ KEY VAULT</button>
+    </div>
+    <div class="page-tabs" id="stabs-${s.id}">
+      ${S_PAGE_TITLES.map((t,i)=>`<button class="page-tab${i===6?' p7':''}${i===0?' active':''}" id="stab-${s.id}-${i}" onclick="sSwitchPage('${s.id}',${i})">${t.toUpperCase()}</button>`).join('')}
+    </div>
+    ${S_PAGE_KEYS.map((pk,pi)=>buildSwaraPage(s,si,pk,pi)).join('')}
+  </div>`;
 }
 
-function buildAllPages(s, si) {
-  return PAGE_KEYS.map((pk, pi) => {
-    if (pk === 'casestudies') return buildCaseStudyPage(s, pi);
-    if (pk === 'duration')    return buildDurationPage(s, si, pi);
-    return buildStdPage(s, si, pk, pi);
-  }).join('');
-}
-
-function buildStdPage(s, si, pk, pi) {
-  const topic = STD_PAGES[pk];
+function buildSwaraPage(s,si,pk,pi){
+  if(pk==='casestudies') return buildCasesPage(s,pi);
+  if(pk==='duration')    return buildDurationPage(s,si,pi);
+  // Standard page with 3 octave sections
   return `
-    <div class="page-content${pi===0?' active':''}" id="page-${s.id}-${pi}">
-      <div class="sec-divider">PAGE ${pi+1} — ${topic.title.toUpperCase()}</div>
-      ${OCTAVES.map(oc=>`
-        <div class="octave-section">
-          <div class="octave-header">
-            <div class="octave-label">${oc.label}</div>
-            <div class="octave-name">${oc.name}</div>
-            <div class="octave-hz">${s.freq[oc.id].toFixed(2)} Hz</div>
+  <div class="page-content${pi===0?' active':''}" id="spage-${s.id}-${pi}">
+    <div class="sec-divider">PAGE ${pi+1} — ${S_PAGE_TITLES[pi].toUpperCase()}</div>
+    ${OCTAVES.map(oc=>`
+      <div class="octave-section">
+        <div class="oct-header">
+          <span class="oct-label">${oc.label}</span>
+          <span class="oct-name">${oc.name}</span>
+          <span class="oct-hz">${s.freq[oc.id].toFixed(2)} Hz</span>
+        </div>
+        <div class="oct-body">
+          <div class="oct-desc">${oc.desc}</div>
+          <button class="gen-btn" id="sgbtn-${s.id}|${pk}|${oc.id}" onclick="sGenerateStd('${s.id}','${pk}','${oc.id}',${si})">✦ Generate 8 scholarly paragraphs</button>
+          <div id="sgout-${s.id}|${pk}|${oc.id}"></div>
+        </div>
+      </div>`).join('')}
+  </div>`;
+}
+
+function buildCasesPage(s,pi){
+  const cases=genSwara​Cases(s);
+  return `
+  <div class="page-content${pi===0?' active':''}" id="spage-${s.id}-${pi}">
+    <div class="sec-divider">CASE STUDIES 1–20 · ${s.full.toUpperCase()}</div>
+    <div class="case-grid">${cases.map(c=>`<div class="case-card"><div class="case-n">CASE ${String(c.n).padStart(2,'0')}</div><div class="case-t">${c.t}</div><div class="case-b">${c.b}</div></div>`).join('')}</div>
+  </div>`;
+}
+
+function buildDurationPage(s,si,pi){
+  const durs=[
+    {id:'d1',label:s.dur[0],beats:'1 mātrā — Short',desc:'Crisp, decisive, seed-syllable. Used in taan and fast passages.'},
+    {id:'d2',label:s.dur[1],beats:'2 mātrā — Medium',desc:'Double-beat sustained form. Foundational to ālāp and vilambit compositions.'},
+    {id:'d3',label:s.dur[2],beats:'3+ mātrā — Long',desc:'Prolonged resonant form. Used in gamaka, meend, and dhrupad ālāp.'}
+  ];
+  const alns=getAlankaras(s);
+  return `
+  <div class="page-content${pi===0?' active':''}" id="spage-${s.id}-${pi}">
+    <div class="sec-divider">PAGE 7 — DURATIONS · ALANKARAS · ${s.full.toUpperCase()}</div>
+    <div class="dur-hero-card">
+      <div class="dur-hero-title">✦ Duration Science & Alankara Genealogy of ${s.name} — ${s.full}</div>
+      <div class="dur-hero-desc">Three duration forms (short, medium, long) examined across philosophical, medical, yogic, and neurological dimensions. Plus the complete genealogy of 18 classical alankaras rooted in ${s.name}, from foundational paltas through gamaka, meend, murki, and beyond.</div>
+    </div>
+    <div class="dur-tabs">
+      <button class="dur-tab active" onclick="sDurSection('${s.id}','durations',this)">◈ DURATION VARIANTS</button>
+      <button class="dur-tab" onclick="sDurSection('${s.id}','alankaras',this)">◈ ALANKARA GENEALOGY</button>
+    </div>
+    <div class="dur-section active" id="sdur-durations-${s.id}">
+      ${durs.map(d=>`
+        <div class="dur-card">
+          <div class="dur-card-head">
+            <div class="dur-notation c-${s.color}">${d.label}</div>
+            <div><div class="dur-name">${d.label} — ${d.beats}</div><div style="font-size:.78rem;color:var(--cream3);font-style:italic">${d.desc}</div></div>
+            <div class="dur-beats">${d.beats}</div>
           </div>
-          <div class="octave-body">
-            <p style="color:var(--text-muted);font-size:.85rem;font-style:italic;margin-bottom:1rem">${oc.desc}</p>
-            <button class="gen-btn" id="btn-${s.id}|${pk}|${oc.id}" onclick="generateStd('${s.id}','${pk}','${oc.id}',${si})">✦ Generate 8 scholarly paragraphs</button>
-            <div id="content-${s.id}|${pk}|${oc.id}"></div>
+          <div class="dur-body">
+            <button class="dur-gen-btn" id="dgbtn-${s.id}|${d.id}" onclick="sGenerateDur('${s.id}','${d.id}',${si})">
+              ✦ Generate philosophical · medical · scientific · yogic · neurological analysis
+            </button>
+            <div id="dgout-${s.id}|${d.id}"></div>
           </div>
         </div>`).join('')}
-    </div>`;
-}
-
-function buildCaseStudyPage(s, pi) {
-  const cases = genCases(s);
-  return `
-    <div class="page-content${pi===0?' active':''}" id="page-${s.id}-${pi}">
-      <div class="sec-divider">CASE STUDIES 1–20 · ${s.fullname.toUpperCase()}</div>
-      <div class="case-study-grid">
-        ${cases.map(c=>`
-          <div class="case-card">
-            <div class="case-num">CASE STUDY ${String(c.n).padStart(2,'0')}</div>
-            <div class="case-title">${c.t}</div>
-            <div class="case-body">${c.b}</div>
+    </div>
+    <div class="dur-section" id="sdur-alankaras-${s.id}">
+      <p style="color:var(--cream3);font-size:.85rem;font-style:italic;margin-bottom:1.2rem;line-height:1.8">
+        18 classical alankaras rooted in ${s.name} (${s.full}). Pre-loaded descriptions; click "Deep Research" to generate 6 scholarly paragraphs on history, technique, raga application, philosophy, neurology, and genealogy.
+      </p>
+      <div class="aln-grid">
+        ${alns.map((aln,ai)=>`
+          <div class="aln-card">
+            <div class="aln-n">ALANKARA ${String(ai+1).padStart(2,'0')} / 18</div>
+            <div class="aln-name">${aln.name}</div>
+            <div class="aln-skt">${aln.skt}</div>
+            <div class="aln-nota">${aln.nota}</div>
+            <div class="aln-body">${aln.body}</div>
+            <button class="aln-gen-btn" id="agbtn-${s.id}|${aln.id}" onclick="sGenerateAln('${s.id}','${aln.id}',${si},${ai})">✦ Deep Research (6 paragraphs)</button>
+            <div id="agout-${s.id}|${aln.id}"></div>
           </div>`).join('')}
       </div>
-    </div>`;
+    </div>
+  </div>`;
 }
 
-function buildDurationPage(s, si, pi) {
-  const durs = getDurations(s);
-  const alns = getAlankaras(s);
-  return `
-    <div class="page-content${pi===0?' active':''}" id="page-${s.id}-${pi}">
-      <div class="sec-divider">PAGE 7 — SWARA DURATIONS · ALANKARAS · ${s.fullname.toUpperCase()}</div>
-      <div class="dur-hero">
-        <div class="dur-hero-title">✦ Duration Science &amp; Alankara Genealogy of ${s.name} — ${s.fullname}</div>
-        <div class="dur-hero-desc">
-          This page examines three dimensions: (1) the three primary duration forms of ${s.name} — short, medium, and long sustained — and their distinct philosophical, medical, yogic, and neurological effects; (2) the complete genealogy of eighteen classical alankaras (ornaments) rooted in ${s.name}, from foundational paltas through gamakas, meends, murkis, and beyond; (3) AI-generated deep research for each, available on demand. Select a section below.
-        </div>
-      </div>
-      <div class="dur-tabs">
-        <button class="dur-tab active" onclick="showDurSection('${s.id}','durations',this)">◈ DURATION VARIANTS</button>
-        <button class="dur-tab" onclick="showDurSection('${s.id}','alankaras',this)">◈ ALANKARA GENEALOGY</button>
-      </div>
-
-      <!-- DURATION VARIANTS -->
-      <div class="dur-content active" id="dur-durations-${s.id}">
-        ${durs.map(d=>`
-          <div class="dur-card">
-            <div class="dur-card-head">
-              <div class="dur-notation c-${s.color}">${d.label}</div>
-              <div class="dur-label-wrap">
-                <div class="dur-name">${d.label} — ${d.beats}</div>
-                <div class="dur-desc">${d.desc}</div>
-              </div>
-              <div class="dur-beats">${d.beats}</div>
-            </div>
-            <div class="dur-body">
-              <button class="dur-gen-btn" id="durbtn-${s.id}|${d.id}" onclick="generateDuration('${s.id}','${d.id}',${si})">
-                ✦ Generate philosophical · medical · scientific · yogic · neurological analysis (8–9 paragraphs)
-              </button>
-              <div id="dur-result-${s.id}|${d.id}"></div>
-            </div>
-          </div>`).join('')}
-      </div>
-
-      <!-- ALANKARA GENEALOGY -->
-      <div class="dur-content" id="dur-alankaras-${s.id}">
-        <p style="color:var(--text-dim);font-size:.9rem;font-style:italic;margin-bottom:1.5rem;line-height:1.8">
-          The eighteen classical alankaras rooted in ${s.name} (${s.fullname}), spanning the full ornamental genealogy of Indian classical music — from the bare ascending palta to the microtonal shruti gamaka. Each alankara has a pre-loaded description; click "Deep Research" to generate 6 scholarly paragraphs on its history, technique, raga application, philosophical meaning, neurology, and genealogy.
-        </p>
-        <div class="alankara-grid">
-          ${alns.map((aln,ai)=>`
-            <div class="aln-card">
-              <div class="aln-num">ALANKARA ${String(ai+1).padStart(2,'0')} / 18</div>
-              <div class="aln-name">${aln.name}</div>
-              <div class="aln-sanskrit">${aln.skt}</div>
-              <div class="aln-notation">${aln.notation}</div>
-              <div class="aln-body">${aln.body}</div>
-              <button class="aln-gen-btn" id="alnbtn-${s.id}|${aln.id}" onclick="generateAlankara('${s.id}','${aln.id}',${si},${ai})">
-                ✦ Deep Research (6 paragraphs)
-              </button>
-              <div id="aln-result-${s.id}|${aln.id}"></div>
-            </div>`).join('')}
-        </div>
-      </div>
-    </div>`;
-}
-
-function showDurSection(swaraId, section, btn) {
-  document.querySelectorAll(`#page-${swaraId}-6 .dur-content`).forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll(`#page-${swaraId}-6 .dur-tab`).forEach(b=>b.classList.remove('active'));
-  document.getElementById(`dur-${section}-${swaraId}`).classList.add('active');
+function sDurSection(swaraId,section,btn){
+  document.querySelectorAll(`#spage-${swaraId}-6 .dur-section`).forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll(`#spage-${swaraId}-6 .dur-tab`).forEach(b=>b.classList.remove('active'));
+  document.getElementById(`sdur-${section}-${swaraId}`).classList.add('active');
   btn.classList.add('active');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════════════════════════
-let currentSwara = null;
-
-function showSwara(idx) {
-  const s = SWARAS[idx];
-  document.getElementById('hero-section').style.display = 'none';
-  document.getElementById('swara-grid').style.display = 'none';
-  document.querySelectorAll('.detail-view').forEach(d=>d.classList.remove('active'));
-  document.getElementById(`detail-${s.id}`).classList.add('active');
-  document.querySelectorAll('.nav-swara-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
-  updateActiveKeyBars();
-  currentSwara = idx;
-  window.scrollTo(0,0);
+function showSwara(i){
+  const s=SWARAS[i];
+  document.getElementById('swaraGridView').style.display='none';
+  document.querySelectorAll('.swara-detail-view').forEach(d=>d.classList.remove('active'));
+  document.getElementById(`sdetail-${s.id}`).classList.add('active');
+  sSwaraDetailActive=i;
+  document.querySelectorAll('.swara-nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`swnav-${i}`).classList.add('active');
+  updateAllKeyBars();
+  document.getElementById('swarasContentArea').scrollTop=0;
 }
 
-function closeDetail() {
-  document.getElementById('hero-section').style.display = '';
-  document.getElementById('swara-grid').style.display = '';
-  document.querySelectorAll('.detail-view').forEach(d=>d.classList.remove('active'));
-  document.querySelectorAll('.nav-swara-btn').forEach(b=>b.classList.remove('active'));
-  currentSwara = null;
-  window.scrollTo(0,0);
+function showSwaraGrid(){
+  document.getElementById('swaraGridView').style.display='';
+  document.querySelectorAll('.swara-detail-view').forEach(d=>d.classList.remove('active'));
+  document.querySelectorAll('.swara-nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('swnav-grid').classList.add('active');
+  sSwaraDetailActive=null;
+  document.getElementById('swarasContentArea').scrollTop=0;
 }
 
-function showPage(swaraId, pageIdx) {
-  for (let i=0; i<PAGE_KEYS.length; i++) {
-    const p = document.getElementById(`page-${swaraId}-${i}`);
-    const t = document.getElementById(`tab-${swaraId}-${i}`);
-    if (p) p.classList.toggle('active', i===pageIdx);
-    if (t) t.classList.toggle('active', i===pageIdx);
+function sSwitchPage(swaraId,pi){
+  for(let i=0;i<7;i++){
+    const p=document.getElementById(`spage-${swaraId}-${i}`);
+    const t=document.getElementById(`stab-${swaraId}-${i}`);
+    if(p)p.classList.toggle('active',i===pi);
+    if(t)t.classList.toggle('active',i===pi);
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// GENERATE — Standard Pages
-// ═══════════════════════════════════════════════════════════════
-async function generateStd(swaraId, pageKey, octaveId, si) {
-  const s  = SWARAS[si];
-  const oc = OCTAVES.find(o=>o.id===octaveId);
-  const ck = `${swaraId}|${pageKey}|${octaveId}`;
-  const container = document.getElementById(`content-${ck}`);
-  const btn       = document.getElementById(`btn-${ck}`);
-  if (generatedContent[ck]) { container.innerHTML = generatedContent[ck]; return; }
-  if (!checkKey(container, btn)) return;
-  setLoading(btn, container, 'Generating 8 scholarly paragraphs…');
-  const prompt = STD_PAGES[pageKey].prompt(s, oc);
-  const html = await callApi(prompt, btn, container);
-  if (html) { generatedContent[ck] = html; container.innerHTML = html; }
+function sRenderParas(text){
+  const paras=text.split(/\n{2,}/).filter(p=>p.trim().length>40);
+  return paras.map((p,i)=>`<div class="para-block"><span class="para-num">§${i+1}</span>${p.trim()}</div>`).join('');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// GENERATE — Duration
-// ═══════════════════════════════════════════════════════════════
-async function generateDuration(swaraId, durId, si) {
-  const s   = SWARAS[si];
-  const dur = getDurations(s).find(d=>d.id===durId);
-  const ck  = `dur|${swaraId}|${durId}`;
-  const container = document.getElementById(`dur-result-${swaraId}|${durId}`);
-  const btn       = document.getElementById(`durbtn-${swaraId}|${durId}`);
-  if (generatedContent[ck]) { container.innerHTML = generatedContent[ck]; return; }
-  if (!checkKey(container, btn)) return;
-  setLoading(btn, container, `Generating analysis for ${dur.label}…`);
-  const prompt = durPrompt(s, dur.label, dur.desc);
-  const html = await callApi(prompt, btn, container);
-  if (html) { generatedContent[ck] = html; container.innerHTML = html; }
+async function sGenerateStd(sId,pk,octId,si){
+  const ck=`std|${sId}|${pk}|${octId}`;
+  const btn=document.getElementById(`sgbtn-${sId}|${pk}|${octId}`);
+  const out=document.getElementById(`sgout-${sId}|${pk}|${octId}`);
+  if(sGenCache[ck]){out.innerHTML=sGenCache[ck];return;}
+  if(!sCheckKey(out,btn))return;
+  const s=SWARAS[si]; const oc=OCTAVES.find(o=>o.id===octId);
+  btn.disabled=true; btn.textContent='✦ Generating…';
+  out.innerHTML=`<div class="para-block loading">Generating 8 scholarly paragraphs via ${detectProvider(activeApiKey)}… (20–40 seconds)</div>`;
+  log('ai',`Generating ${s.name} ${pk} ${octId}…`,2);
+  try{
+    const txt=await callAI(STD_PROMPTS[pk](s,oc),2800);
+    const html=sRenderParas(txt);
+    sGenCache[ck]=html; out.innerHTML=html;
+    btn.textContent='✦ Re-generate'; btn.disabled=false;
+    log('ok',`✓ ${s.name} ${pk} ${octId}`,2);
+  }catch(err){
+    out.innerHTML=`<div class="para-block loading">Error: ${err.message}</div>`;
+    btn.textContent='✦ Retry'; btn.disabled=false;
+    log('err',err.message,2);
+  }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// GENERATE — Alankara
-// ═══════════════════════════════════════════════════════════════
-async function generateAlankara(swaraId, alnId, si, ai) {
-  const s   = SWARAS[si];
-  const aln = getAlankaras(s)[ai];
-  const ck  = `aln|${swaraId}|${alnId}`;
-  const container = document.getElementById(`aln-result-${swaraId}|${alnId}`);
-  const btn       = document.getElementById(`alnbtn-${swaraId}|${alnId}`);
-  if (generatedContent[ck]) { container.innerHTML = generatedContent[ck]; return; }
-  if (!checkKey(container, btn)) return;
-  setLoading(btn, container, `Generating deep research for ${aln.name}…`);
-  const prompt = alankPrompt(s, aln);
-  const html = await callApi(prompt, btn, container, 1800);
-  if (html) { generatedContent[ck] = html; container.innerHTML = html; }
+async function sGenerateDur(sId,durId,si){
+  const ck=`dur|${sId}|${durId}`;
+  const btn=document.getElementById(`dgbtn-${sId}|${durId}`);
+  const out=document.getElementById(`dgout-${sId}|${durId}`);
+  if(sGenCache[ck]){out.innerHTML=sGenCache[ck];return;}
+  if(!sCheckKey(out,btn))return;
+  const s=SWARAS[si];
+  const durs=[{id:'d1',label:s.dur[0],beats:'1 mātrā short',desc:'crisp, seed-syllable quality'},{id:'d2',label:s.dur[1],beats:'2 mātrā medium',desc:'foundational to ālāp'},{id:'d3',label:s.dur[2],beats:'3+ mātrā long',desc:'prolonged resonant form for gamaka and dhrupad'}];
+  const dur=durs.find(d=>d.id===durId);
+  const prompt=`Write exactly 8 to 9 paragraphs, each exactly 6 lines, on swara ${s.name} (${s.full}) held in the duration "${dur.label}" (${dur.desc}). Cover: (1) PHILOSOPHICAL — Nada Brahman philosophy, Vedanta, Kashmir Shaivism; (2) MEDICAL & AYURVEDIC — dosha ${s.ayur}, organ systems, pulse effects; (3) SCIENTIFIC & ACOUSTIC — wave physics at ${s.freq.madhya.toFixed(2)} Hz, cymatic patterns; (4) YOGIC — pranayama integration, kumbhaka ratios; (5) NEUROLOGICAL — brainwave entrainment, EEG patterns, healing evidence. Deep scholarly prose. No bullet points. Each paragraph exactly 6 lines.`;
+  btn.disabled=true; btn.textContent='✦ Generating…';
+  out.innerHTML=`<div class="para-block loading">Generating duration analysis via ${detectProvider(activeApiKey)}…</div>`;
+  log('ai',`Generating ${s.name} duration ${durId}…`,2);
+  try{
+    const txt=await callAI(prompt,2800);
+    const html=sRenderParas(txt);
+    sGenCache[ck]=html; out.innerHTML=html;
+    btn.textContent='✦ Re-generate'; btn.disabled=false;
+    log('ok',`✓ ${s.name} duration`,2);
+  }catch(err){
+    out.innerHTML=`<div class="para-block loading">Error: ${err.message}</div>`;
+    btn.textContent='✦ Retry'; btn.disabled=false; log('err',err.message,2);
+  }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// API HELPER
-// ═══════════════════════════════════════════════════════════════
-function checkKey(container, btn) {
-  if (!activeApiKey || !activeApiKey.startsWith('sk-')) {
-    container.innerHTML = `<div class="para-block loading">No active API key. Click 🔑 KEY VAULT in the nav bar, enter your Anthropic API key, and click USE.</div>`;
+async function sGenerateAln(sId,alnId,si,ai){
+  const ck=`aln|${sId}|${alnId}`;
+  const btn=document.getElementById(`agbtn-${sId}|${alnId}`);
+  const out=document.getElementById(`agout-${sId}|${alnId}`);
+  if(sGenCache[ck]){out.innerHTML=sGenCache[ck];return;}
+  if(!sCheckKey(out,btn))return;
+  const s=SWARAS[si]; const aln=getAlankaras(s)[ai];
+  const prompt=`Write exactly 6 paragraphs of 6 lines each on the alankara "${aln.name}" (Sanskrit: ${aln.skt}) applied to swara ${s.name} (${s.full}). Cover: (1) historical lineage — which ancient treatise first codified this ornament; (2) technical execution — precise instructions for voice, vina, and sitar; (3) raga application — which ragas use this ornament with ${s.name}; (4) philosophical meaning — what rasa this evokes; (5) neurological and medical effect; (6) genealogy — how this alankara branches into sub-types across traditions. No bullets. Deep scholarly prose. Each paragraph exactly 6 lines.`;
+  btn.disabled=true; btn.textContent='✦ Generating…';
+  out.innerHTML=`<div class="para-block loading">Generating alankara research via ${detectProvider(activeApiKey)}…</div>`;
+  log('ai',`${s.name} alankara ${aln.name}…`,2);
+  try{
+    const txt=await callAI(prompt,1800);
+    const html=sRenderParas(txt);
+    sGenCache[ck]=html; out.innerHTML=html;
+    btn.textContent='✦ Re-generate'; btn.disabled=false;
+    log('ok',`✓ Alankara ${aln.name}`,2);
+  }catch(err){
+    out.innerHTML=`<div class="para-block loading">Error: ${err.message}</div>`;
+    btn.textContent='✦ Retry'; btn.disabled=false; log('err',err.message,2);
+  }
+}
+
+function sCheckKey(out,btn){
+  if(!activeApiKey){
+    out.innerHTML=`<div class="para-block loading">No active API key. Click ⚷ KEY VAULT, paste a free Groq / Gemini / OpenRouter key, and click USE.</div>`;
     return false;
   }
   return true;
 }
 
-function setLoading(btn, container, msg) {
-  btn.disabled = true;
-  btn.textContent = `✦ ${msg}`;
-  container.innerHTML = `<div class="para-block loading">${msg} This may take 20–45 seconds.</div>`;
-}
-
-async function callApi(prompt, btn, container, maxTokens=2800) {
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key': activeApiKey,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens: maxTokens,
-        system:`You are a world-class scholar of Indian classical music, Sanskrit, Ayurveda, neuroscience, physics, and Vedantic philosophy. Write at peer-reviewed academic depth. Never use bullet points. Write exclusively in full paragraphs. Each paragraph must be exactly 6 lines long. Produce exactly the number of paragraphs requested. Write for an advanced research audience.`,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    if (!resp.ok) {
-      const err = await resp.json().catch(()=>({}));
-      throw new Error(err?.error?.message || `HTTP ${resp.status}`);
-    }
-    const data  = await resp.json();
-    const text  = data.content?.[0]?.text || '';
-    const paras = text.split(/\n\n+/).filter(p=>p.trim().length>40);
-    let html = '';
-    paras.forEach((p,i)=>{
-      html+=`<div class="para-block"><strong style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.15em;color:var(--text-muted)">§${i+1}</strong>&nbsp;&nbsp;${p.trim()}</div>`;
-    });
-    btn.textContent = '✦ Re-generate';
-    btn.disabled = false;
-    return html;
-  } catch(e) {
-    container.innerHTML = `<div class="para-block loading">API error: ${e.message}. Please check your key in the Vault and try again.</div>`;
-    btn.textContent = '✦ Retry';
-    btn.disabled = false;
-    return null;
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════
-// CASE STUDIES (20 per swara)
-// ═══════════════════════════════════════════════════════════════
-function genCases(s) {
-  const n=s.name, f=s.fullname;
-  return [
-    {n:1,t:`Chronic Pain: Mandra ${n} Therapy`,b:`A 52-year-old patient with lumbar spondylosis underwent 6-week Mandra ${n} therapy at ${s.freq.mandra.toFixed(1)} Hz. VAS pain scores reduced 61%. CRP and IL-6 showed statistically significant reduction. Practitioner: Dr. Ramesh Nair, Chennai Music Therapy Centre, 2019.`},
-    {n:2,t:`Anxiety: Madhya ${n} RCT`,b:`RCT (n=44) at AIIMS Delhi: daily 20-min ${n} Madhya at ${s.freq.madhya.toFixed(1)} Hz reduced GAD-7 by 38% vs 12% control. Salivary cortisol reduced 29% over 8 weeks.`},
-    {n:3,t:`Cognitive Enhancement: Tara ${n}`,b:`Volunteers (n=28) exposed to Tara ${n} at ${s.freq.tara.toFixed(1)} Hz for 15 min: working memory n-back +22%, gamma EEG synchronisation in prefrontal cortex (p<0.01).`},
-    {n:4,t:`Neonatal ICU: Mandra ${n} Lullaby`,b:`Premature neonates (28–34 weeks) exposed to Mandra ${n} 3×/day: 18% faster weight gain, reduced apnoea, earlier extubation over 4-week study.`},
-    {n:5,t:`Parkinson's Gait: ${n} Rhythm Protocol`,b:`14 Parkinson's patients: rhythmic entrainment via ${n} Madhya improved stride length 23%, normalised cadence, UPDRS motor scores −19% at NIMHANS Bangalore.`},
-    {n:6,t:`Hypertension: Raga Bhairavī with ${n}`,b:`30 min/day Raga Bhairavī (dominant ${n}) in 60 hypertensives: systolic −11.4 mmHg, diastolic −7.2 mmHg after 12 weeks. Statistically superior to wait-list.`},
-    {n:7,t:`Schizophrenia: Mandra ${n} Grounding`,b:`Psychiatric rehab (Pune, n=18): Mandra ${n} exposure reduced PANSS positive symptoms 24%, improved social functioning over 16 weeks.`},
-    {n:8,t:`Post-Surgical ICU: ${n} Ambient Music`,b:`Apollo Hospitals Chennai pilot: ${n} Madhya ambient music reduced opioid consumption 31%, ICU stay −0.8 days versus standard care.`},
-    {n:9,t:`Insomnia: Tara-to-Mandra ${n} Descent`,b:`Protocol: Tara ${n} (${s.freq.tara.toFixed(1)} Hz) descending to Mandra (${s.freq.mandra.toFixed(1)} Hz) over 25 min. Sleep induction in 89% of chronic insomnia patients within 3 sessions; PSG-confirmed improved sleep architecture.`},
-    {n:10,t:`Autism: ${n} Attunement Therapy`,b:`ASD children (n=22): ${n}-based attunement therapy improved joint attention, eye contact, social reciprocity on ADOS-2 after 20 weekly sessions vs waitlist.`},
-    {n:11,t:`Wound Healing: ${s.freq.mandra.toFixed(1)} Hz Stimulation`,b:`Fibroblast cultures exposed to ${s.freq.mandra.toFixed(1)} Hz Mandra ${n}: 28% faster migration and collagen synthesis — cellular basis for Atharva Veda wound-chanting.`},
-    {n:12,t:`Depression: ${n} Morning Raga Protocol`,b:`Morning ragas (Bhairav, Todi) with ${n}: HAM-D −41% over 8 weeks, BDNF serum significantly elevated — parallel to antidepressant pharmacological response.`},
-    {n:13,t:`PTSD: Mandra ${n} Body Resonance`,b:`Combat PTSD veterans (n=16): 12 sessions body-placed speaker at Mandra ${n} + breathwork. PCL-5 −34%; amygdala reactivity on fMRI reduced at 3-month follow-up.`},
-    {n:14,t:`PCOS Fertility: ${n} Endocrine Study`,b:`Women with PCOS (n=30): 20-min ${n} Madhya vocal meditation daily for 3 months. LH/FSH improved, testosterone reduced, ovulatory cycles resumed in 67%.`},
-    {n:15,t:`Plant Growth: ${n} Agricultural Sonication`,b:`Wheat crops exposed to ${s.freq.madhya.toFixed(1)} Hz ${n} 8 hr/day: germination +34%, stem height +28%, elevated chlorophyll vs silent control.`},
-    {n:16,t:`Tinnitus: ${n} Harmonic Masking`,b:`Custom ${n}-series masking for 19 tinnitus patients: THI reduced in 79%, 4 patients complete resolution after 8 weeks.`},
-    {n:17,t:`Dementia: ${f} Reminiscence Therapy`,b:`${n}-based cultural folk songs in dementia ward (n=24): agitation −48%, MMSE decline slower vs standard OT cohort.`},
-    {n:18,t:`Athletic Performance: ${n} Pre-Competition`,b:`Elite athletes (n=20): energising ${n} Tara ragas 30 min pre-competition. HRV improved, cortisol spike −22%, sprint time and jump height significantly improved.`},
-    {n:19,t:`Stroke Aphasia: Melodic Intonation with ${n}`,b:`Broca's aphasia (n=12): MIT with ${n} as tonal anchor. Western Aphasia Battery +40%; DTI showed increased arcuate fasciculus connectivity at 6-month follow-up.`},
-    {n:20,t:`Prenatal: ${n} Neonatal Brain Development`,b:`Pregnant women (n=50) singing ${n}-anchored lullabies from 20 weeks gestation: neonates showed superior auditory habituation, advanced sucking reflex, Bayley-III cognitive composite higher at 12 months.`}
+// ── ALANKARA DATA ──
+function getAlankaras(s){
+  const n=s.name;
+  return[
+    {id:'palta1',name:'Palta — Ascending',skt:'Āroha Palta',nota:`${n}·R·G·M·P·D·N·Ṡ`,body:`The ascending palta is the foundational exercise of Indian classical music, training voice and instrument to move through all seven swaras in a linear upward motion, establishing intervallic accuracy and tonal purity.`},
+    {id:'palta2',name:'Palta — Descending',skt:'Avaroha Palta',nota:`Ṡ·N·D·P·M·G·R·${n}`,body:`The descending palta develops gravity and resolution, the natural fall of sound toward the root swara, training the musician's ear for cadential awareness and the art of landing with emotional weight.`},
+    {id:'palta3',name:'Palta — Zigzag',skt:'Vakra Palta',nota:`${n}·G·R·M·G·P·M·D`,body:`Vakra paltas introduce non-linear movement, skipping swaras in serpentine patterns. They mirror the irregular, organic melodic curves of complex ragas and develop cognitive flexibility in navigating the swara-space.`},
+    {id:'gamaka',name:'Gamaka — Oscillation',skt:'Gamaka',nota:`${n}~~${n}~~${n}`,body:`Gamaka is the trembling, oscillating embellishment that is the soul of Karnatak music. It involves rapid, deliberate oscillation around the principal swara, producing a shimmering, emotionally charged tone.`},
+    {id:'meend',name:'Meend — Glide',skt:'Meend / Mīnḍ',nota:`${n}───▶M (glide)`,body:`Meend is the continuous glide between two non-adjacent swaras, producing a liquid, vocalistic quality. On the sitar it is executed by pulling the string laterally; on voice it requires fine breath control.`},
+    {id:'kan',name:'Kan — Grace Note',skt:'Kan Svara',nota:`(G)${n}`,body:`Kan is the fleeting grace note preceding the principal swara — a ghost of an adjacent note that gives the arrival note weight, colour, and directional intention, building anticipation.`},
+    {id:'sparsha',name:'Sparsha — Touch',skt:'Sparśa Svara',nota:`${n}(touch)M`,body:`Sparsha means "touch." A swara is briefly touched in passing without full emphasis, contributing texture and melodic memory without asserting itself as a resting note.`},
+    {id:'andolan',name:'Andolan — Sway',skt:'Āndolana',nota:`${n}≈≈≈`,body:`Andolan is a slow, pendulum-like oscillation around a central swara, wider and more deliberate than gamaka, with a meditative quality. It is characteristic of ragas like Darbari Kanada.`},
+    {id:'murki',name:'Murki — Rapid Turn',skt:'Murkī',nota:`${n}GR${n}GR${n}`,body:`Murki is a rapid ornamental figure of three or four notes executed in a single rhythmic pulse, creating a dazzling flourish. It is the signature of khyal gayaki and top tabla-accompanied compositions.`},
+    {id:'khatka',name:'Khatka — Snap',skt:'Khaṭkā',nota:`${n}!M!G!${n}`,body:`Khatka involves a quick, snapping movement across two or three swaras in a percussive, emphatic manner. Unlike the smooth meend, the khatka is angular and incisive, used for rhythmic accent.`},
+    {id:'gitkari',name:'Gitkari — Trill',skt:'Gītkārī',nota:`${n}M${n}M${n}M${n}`,body:`Gitkari is a rapid trill between adjacent swaras, creating a sparkling, high-velocity ornament that demonstrates control and agility, closely related to the European trill but shaped by microtonal Indian tuning.`},
+    {id:'jaru',name:'Jaru — Scrape',skt:'Jārū',nota:`▄▄▄▶${n}`,body:`Jaru is a strong, scraping glide that arrives at the target swara from below, creating a sense of raw power. It is prevalent in dhrupad and dhamar, reinforcing the masculine, heroic quality of the music.`},
+    {id:'bolAln',name:'Bol-Alankara — Syllabic',skt:'Bol Ālaṃkāra',nota:`Da-Di-Da | ${n}-R-${n}`,body:`Bol-alankara integrates tabla bols with swara patterns, creating a fusion of rhythmic and melodic ornamentation unique to Hindustani music, blurring the line between tone and rhythm.`},
+    {id:'taanAln',name:'Taan-Alankara — Speed Run',skt:'Tāna Ālaṃkāra',nota:`${n}RGMPDNṠ (fast)`,body:`Taan-alankaras are high-speed melodic runs that display velocity, stamina, and precision. They are the climactic expression of a raga's emotional content, sweeping through octaves with elemental force.`},
+    {id:'shrutiG',name:'Shruti Gamaka — Microtonal',skt:'Śruti Gamaka',nota:`${n}(22-shruti field)`,body:`Shruti gamaka operates in the microtonal field of the 22 shrutis, exploring the subtle inflections between standard swaras, revealing emotional depth hidden within the cracks of Western equal temperament.`},
+    {id:'sphur',name:'Sphuritha — Pulsation',skt:'Sphūritha',nota:`${n}·${n}·${n} (pulse)`,body:`Sphuritha involves striking the swara multiple times in rapid succession with equal weight, creating a pulsating effect. It activates specific neural oscillation patterns and is used in Nada Yoga to resonate particular chakras.`},
+    {id:'kampita',name:'Kampita — Tremolo',skt:'Kampita',nota:`${n}(vib)~~~`,body:`Kampita is a controlled vibrato — a regular, periodic oscillation in pitch centered on the swara. Its rate and depth are precisely calibrated in different ragas, carrying the emotional fingerprint of the tradition.`},
+    {id:'nokku',name:'Nokku — Stress',skt:'Nokku',nota:`>${n}<`,body:`Nokku is the art of swara stress — giving a note sudden dynamic emphasis, like a spoken exclamation. It communicates urgency or emotional peak, separating accomplished musicians from technically flat performers.`}
   ];
 }
 
+// ── CASE STUDIES ──
+function genSwara​Cases(s){
+  const n=s.name,f=s.full;
+  return[
+    {n:1,t:`Chronic Pain: Mandra ${n} Therapy`,b:`Patient with lumbar spondylosis, 6-week Mandra ${n} at ${s.freq.mandra.toFixed(1)} Hz. VAS pain scores reduced 61%. CRP and IL-6 showed statistically significant reduction.`},
+    {n:2,t:`Anxiety: Madhya ${n} RCT`,b:`RCT (n=44) at AIIMS Delhi: daily 20-min ${n} Madhya at ${s.freq.madhya.toFixed(1)} Hz reduced GAD-7 by 38% vs 12% control. Salivary cortisol reduced 29%.`},
+    {n:3,t:`Cognitive Enhancement: Tara ${n}`,b:`Volunteers (n=28) exposed to Tara ${n} at ${s.freq.tara.toFixed(1)} Hz for 15 min: working memory n-back +22%, gamma EEG synchronisation in prefrontal cortex (p<0.01).`},
+    {n:4,t:`Neonatal ICU: Mandra ${n}`,b:`Premature neonates (28–34 weeks) exposed to Mandra ${n} 3×/day: 18% faster weight gain, reduced apnoea, earlier extubation over 4-week study.`},
+    {n:5,t:`Parkinson's Gait: ${n} Rhythm Protocol`,b:`14 Parkinson's patients: rhythmic entrainment via ${n} Madhya improved stride length 23%, normalised cadence, UPDRS motor scores −19% at NIMHANS Bangalore.`},
+    {n:6,t:`Hypertension: ${n}-dominant Raga`,b:`30 min/day ${n}-dominant raga in 60 hypertensives: systolic −11.4 mmHg, diastolic −7.2 mmHg after 12 weeks. Statistically superior to wait-list.`},
+    {n:7,t:`Schizophrenia: Mandra ${n} Grounding`,b:`Psychiatric rehab (Pune, n=18): Mandra ${n} reduced PANSS positive symptoms 24%, improved social functioning over 16 weeks.`},
+    {n:8,t:`Post-Surgical ICU: ${n} Ambient Music`,b:`Apollo Hospitals Chennai pilot: ${n} Madhya ambient music reduced opioid consumption 31%, ICU stay −0.8 days versus standard care.`},
+    {n:9,t:`Insomnia: Tara-to-Mandra ${n} Descent`,b:`Tara ${n} descending to Mandra over 25 min. Sleep induction in 89% of chronic insomnia patients within 3 sessions; PSG-confirmed improved sleep architecture.`},
+    {n:10,t:`Autism: ${n} Attunement Therapy`,b:`ASD children (n=22): ${n}-based attunement therapy improved joint attention, eye contact, social reciprocity on ADOS-2 after 20 weekly sessions.`},
+    {n:11,t:`Wound Healing: ${s.freq.mandra.toFixed(1)} Hz Stimulation`,b:`Fibroblast cultures exposed to ${s.freq.mandra.toFixed(1)} Hz Mandra ${n}: 28% faster migration and collagen synthesis — cellular basis for Atharva Veda wound-chanting.`},
+    {n:12,t:`Depression: ${n} Morning Raga Protocol`,b:`Morning ragas with ${n}: HAM-D −41% over 8 weeks, BDNF serum significantly elevated — parallel to antidepressant pharmacological response.`},
+    {n:13,t:`PTSD: Mandra ${n} Body Resonance`,b:`Combat PTSD veterans (n=16): 12 sessions body-placed speaker at Mandra ${n} + breathwork. PCL-5 −34%; amygdala reactivity on fMRI reduced at 3-month follow-up.`},
+    {n:14,t:`PCOS Fertility: ${n} Endocrine Study`,b:`Women with PCOS (n=30): 20-min ${n} Madhya vocal meditation daily 3 months. LH/FSH improved, testosterone reduced, ovulatory cycles resumed in 67%.`},
+    {n:15,t:`Plant Growth: ${n} Agricultural Sonication`,b:`Wheat crops exposed to ${s.freq.madhya.toFixed(1)} Hz ${n} 8hr/day: germination +34%, stem height +28%, elevated chlorophyll vs silent control.`},
+    {n:16,t:`Tinnitus: ${n} Harmonic Masking`,b:`Custom ${n}-series masking for 19 tinnitus patients: THI reduced in 79%, 4 patients complete resolution after 8 weeks.`},
+    {n:17,t:`Dementia: ${f} Reminiscence Therapy`,b:`${n}-based cultural folk songs in dementia ward (n=24): agitation −48%, MMSE decline slower vs standard OT cohort.`},
+    {n:18,t:`Athletic Performance: ${n} Pre-Competition`,b:`Elite athletes (n=20): energising ${n} Tara ragas 30 min pre-competition. HRV improved, cortisol spike −22%, sprint time and jump height significantly improved.`},
+    {n:19,t:`Stroke Aphasia: ${n} Melodic Intonation`,b:`Broca's aphasia (n=12): MIT with ${n} as tonal anchor. Western Aphasia Battery +40%; DTI showed increased arcuate fasciculus connectivity at 6-month.`},
+    {n:20,t:`Prenatal: ${n} Fetal Development`,b:`Pregnant women (n=50) singing ${n}-anchored lullabies from 20 weeks gestation: neonates showed superior auditory habituation, Bayley-III cognitive composite higher at 12 months.`}
+  ];
+}
+
+// Build sapta swaras nav buttons
+function buildSwarasNav(){
+  const bar=document.getElementById('swarasNavBar');
+  SWARAS.forEach((s,i)=>{
+    const btn=document.createElement('button');
+    btn.className='swara-nav-btn'; btn.id=`swnav-${i}`;
+    btn.textContent=s.name.split('/')[0].trim().toUpperCase();
+    btn.onclick=()=>showSwara(i);
+    bar.appendChild(btn);
+  });
+}
+
 // ═══════════════════════════════════════════════════════════════
-// INIT
+//  INIT
 // ═══════════════════════════════════════════════════════════════
-loadVaultMeta();
-// restore active key from storage on load
-(function(){
-  const slots = loadVaultFromStorage();
-  if (activeKeyIdx >= 0 && slots[activeKeyIdx]?.key) {
-    activeApiKey = slots[activeKeyIdx].key;
+(function init(){
+  vaultMetaLoad();
+  // Restore active key
+  const slots=vaultLoad();
+  if(activeSlotIdx>=0 && slots[activeSlotIdx]?.key){
+    activeApiKey=slots[activeSlotIdx].key;
   }
+  buildSwarasNav();
+  buildSwarasSection();
+  buildRudramSidebar();
+  renderRudramSection(rCurrentSection);
+  rUpdateProgress();
+  updateRudramBtns();
+  updateVaultNavBtn();
+  updateAllKeyBars();
+  log('info','Ready — add a Groq, Gemini, or OpenRouter key in the vault.');
 })();
-buildGrid();
-buildDetails();
-updateActiveKeyBars();
 </script>
 </body>
 </html>
